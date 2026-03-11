@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useCanvasSettings } from "../store/CanvasSettingsContext";
 import clsx from "clsx";
 import { Download } from "lucide-react";
@@ -10,6 +10,8 @@ import { getTemplateOrientation } from "../utils/getTemplateOrientation";
 export default function CanvasWorkspace() {
   const { settings } = useCanvasSettings();
   const canvasRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
 
   const getCanvasDimensions = () => {
     const orientation =
@@ -22,6 +24,16 @@ export default function CanvasWorkspace() {
   };
 
   const dimensions = getCanvasDimensions();
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      setScale(Math.min(1, el.clientWidth / dimensions.width));
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [dimensions.width]);
 
   const handleDownload = async () => {
     if (!canvasRef.current) return;
@@ -72,29 +84,42 @@ export default function CanvasWorkspace() {
         </button>
       </div>
 
-      {/* 실제 렌더링될 캔버스 영역 (고정 크기) */}
-      <div
-        ref={canvasRef}
-        style={{
-          width: `${dimensions.width}px`,
-          height: `${dimensions.height}px`,
-          backgroundColor: settings.backgroundColor,
-          color: "#000",
-        }}
-        className={clsx(
-          "relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl",
-          settings.fontFamily === "dotum"
-            ? "font-dotum"
-            : settings.fontFamily === "batang"
-              ? "font-batang"
-              : "font-sans",
-        )}
-      >
-        {settings.mode === "template" ? (
-          <TemplateModeCanvas />
-        ) : (
-          <FreeModeCanvas />
-        )}
+      {/* 캔버스 스케일 컨테이너 */}
+      <div ref={containerRef} className="w-full max-w-[1600px]">
+        {/* transform이 layout에 영향 없으므로 실제 시각적 크기만큼 높이 확보 */}
+        <div
+          style={{
+            width: dimensions.width * scale,
+            height: dimensions.height * scale,
+          }}
+        >
+          {/* 실제 렌더링될 캔버스 영역 (고정 크기, 스케일로 축소 표시) */}
+          <div
+            ref={canvasRef}
+            style={{
+              width: `${dimensions.width}px`,
+              height: `${dimensions.height}px`,
+              backgroundColor: settings.backgroundColor,
+              color: "#000",
+              transform: `scale(${scale})`,
+              transformOrigin: "top left",
+            }}
+            className={clsx(
+              "relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl",
+              settings.fontFamily === "dotum"
+                ? "font-dotum"
+                : settings.fontFamily === "batang"
+                  ? "font-batang"
+                  : "font-sans",
+            )}
+          >
+            {settings.mode === "template" ? (
+              <TemplateModeCanvas />
+            ) : (
+              <FreeModeCanvas />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

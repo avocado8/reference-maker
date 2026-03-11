@@ -40,7 +40,7 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
             }
             className="text-white text-xs bg-white/20 hover:bg-white/30 px-2 py-1 rounded transition-colors"
           >
-            위치 초기화
+            초기화
           </button>
         </>
       )}
@@ -66,6 +66,7 @@ export default function ImageAsset({ asset }: ImageAssetProps) {
     if (!asset.url) return;
     if ((e.target as HTMLElement).closest("button, input")) return;
     e.preventDefault();
+    e.stopPropagation();
 
     setIsDragging(true);
     const startX = e.clientX;

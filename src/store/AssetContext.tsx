@@ -1,0 +1,148 @@
+import { createContext, useContext, useState, useCallback } from "react";
+import type { ReactNode } from "react";
+import type {
+  AssetType,
+  ImageAssetType,
+  TextAssetType,
+  PaletteAssetType,
+  FreeAssetType,
+} from "../types/assets";
+
+interface AssetContextType {
+  assets: (ImageAssetType | TextAssetType | PaletteAssetType)[];
+  freeAssets: FreeAssetType[];
+  templateSlots: Record<string, string>; // slotId -> assetId
+  addAsset: (type: AssetType, initialData?: any) => string;
+  removeAsset: (id: string) => void;
+  updateAsset: (id: string, updates: any) => void;
+  updateFreeAsset: (assetId: string, updates: Partial<FreeAssetType>) => void;
+  setTemplateSlot: (slotId: string, assetId: string) => void;
+  clearAll: () => void;
+}
+
+const AssetContext = createContext<AssetContextType | undefined>(undefined);
+
+export function AssetProvider({ children }: { children: ReactNode }) {
+  const [assets, setAssets] = useState<
+    (ImageAssetType | TextAssetType | PaletteAssetType)[]
+  >([]);
+  const [freeAssets, setFreeAssets] = useState<FreeAssetType[]>([]);
+  const [templateSlots, setTemplateSlots] = useState<Record<string, string>>(
+    {},
+  );
+
+  const addAsset = useCallback((type: AssetType, initialData?: any): string => {
+    const id = crypto.randomUUID();
+    let newAsset: ImageAssetType | TextAssetType | PaletteAssetType;
+
+    switch (type) {
+      case "image":
+        newAsset = {
+          id,
+          type: "image",
+          url: initialData?.url || "",
+          scale: 1,
+          panX: 0,
+          panY: 0,
+        };
+        break;
+      case "text":
+        newAsset = {
+          id,
+          type: "text",
+          content: "",
+        };
+        break;
+      case "palette":
+        newAsset = {
+          id,
+          type: "palette",
+          size: "M",
+          colors: [
+            {
+              id: crypto.randomUUID(),
+              color: "#3b82f6",
+              showCaption: true,
+              caption: "Primary",
+            },
+          ],
+        };
+        break;
+      default:
+        return "";
+    }
+
+    setAssets((prev) => [...prev, newAsset]);
+
+    // 자유 배치 모드일 경우 초기 위치 설정
+    setFreeAssets((prev) => [
+      ...prev,
+      { assetId: id, x: 50, y: 50, width: 300, height: 200 },
+    ]);
+
+    return id;
+  }, []);
+
+  const removeAsset = useCallback((id: string) => {
+    setAssets((prev) => prev.filter((a) => a.id !== id));
+    setFreeAssets((prev) => prev.filter((a) => a.assetId !== id));
+    setTemplateSlots((prev) => {
+      const next = { ...prev };
+      Object.keys(next).forEach((k) => {
+        if (next[k] === id) delete next[k];
+      });
+      return next;
+    });
+  }, []);
+
+  const updateAsset = useCallback((id: string, updates: any) => {
+    setAssets((prev) =>
+      prev.map((a) => (a.id === id ? { ...a, ...updates } : a)),
+    );
+  }, []);
+
+  const updateFreeAsset = useCallback(
+    (assetId: string, updates: Partial<FreeAssetType>) => {
+      setFreeAssets((prev) =>
+        prev.map((a) => (a.assetId === assetId ? { ...a, ...updates } : a)),
+      );
+    },
+    [],
+  );
+
+  const setTemplateSlot = useCallback((slotId: string, assetId: string) => {
+    setTemplateSlots((prev) => ({ ...prev, [slotId]: assetId }));
+  }, []);
+
+  const clearAll = useCallback(() => {
+    setAssets([]);
+    setFreeAssets([]);
+    setTemplateSlots({});
+  }, []);
+
+  return (
+    <AssetContext.Provider
+      value={{
+        assets,
+        freeAssets,
+        templateSlots,
+        addAsset,
+        removeAsset,
+        updateAsset,
+        updateFreeAsset,
+        setTemplateSlot,
+        clearAll,
+      }}
+    >
+      {children}
+    </AssetContext.Provider>
+  );
+}
+
+export function useAssets() {
+  const context = useContext(AssetContext);
+  if (context === undefined) {
+    throw new Error("useAssets must be used within an AssetProvider");
+  }
+  return context;
+}

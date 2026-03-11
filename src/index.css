@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Pretendard";
+  src: url("/fonts/Pretendard-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "KopubWorldBatang";
+  src: url("/fonts/KoPubWorld-Batang-Medium.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: "system-ui", "Avenir", "Helvetica", "Arial", sans-serif;
+  --font-dotum: "Pretendard", "Dotum", "Apple SD Gothic Neo", sans-serif;
+  --font-batang: "KopubWorldBatang", "Batang", "AppleMyungjo", serif;
+}
+
+@layer base {
+  body {
+    @apply bg-neutral-900 text-neutral-100 antialiased overflow-hidden m-0 p-0;
+  }
+}

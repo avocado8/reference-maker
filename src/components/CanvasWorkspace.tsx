@@ -1,0 +1,101 @@
+import { useRef } from "react";
+import { useCanvasSettings } from "../store/CanvasSettingsContext";
+import clsx from "clsx";
+import { Download } from "lucide-react";
+import { toPng } from "html-to-image";
+import TemplateModeCanvas from "./canvas/TemplateModeCanvas";
+import FreeModeCanvas from "./canvas/FreeModeCanvas";
+import { getTemplateOrientation } from "../utils/getTemplateOrientation";
+
+export default function CanvasWorkspace() {
+  const { settings } = useCanvasSettings();
+  const canvasRef = useRef<HTMLDivElement>(null);
+
+  const getCanvasDimensions = () => {
+    const orientation =
+      settings.mode === "template"
+        ? getTemplateOrientation(settings.templateType)
+        : settings.orientation;
+    return orientation === "portrait"
+      ? { width: 1200, height: 1600 }
+      : { width: 1600, height: 1200 };
+  };
+
+  const dimensions = getCanvasDimensions();
+
+  const handleDownload = async () => {
+    if (!canvasRef.current) return;
+    try {
+      const dataUrl = await toPng(canvasRef.current, {
+        width: dimensions.width,
+        height: dimensions.height,
+        filter: (node) => {
+          if (!(node instanceof HTMLElement)) return true;
+          return node.dataset.exportIgnore !== "true";
+        },
+        style: {
+          transform: "scale(1)",
+          transformOrigin: "top left",
+        },
+      });
+      const link = document.createElement("a");
+      link.download = `character-sheet-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error("Failed to download image", err);
+      alert("이미지 저장 중 오류가 발생했습니다.");
+    }
+  };
+
+  return (
+    <div className="flex-1 w-full h-full bg-neutral-800 flex flex-col items-center overflow-auto p-12">
+      {/* 캔버스 툴바 (상단 액션 메뉴) */}
+      <div className="w-full max-w-[1600px] flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-xl font-bold">미리보기 및 편집</h2>
+          <p className="text-sm text-neutral-400">
+            현재 모드:{" "}
+            {settings.mode === "template" ? "템플릿 모드" : "자유 배치 모드"}
+          </p>
+          <p className="text-sm text-neutral-400">
+            새로고침 시 작업 내역이 초기화됩니다. 업로드한 자료는 로컬
+            브라우저에서만 사용되며 저장되지 않습니다.
+          </p>
+        </div>
+        <button
+          onClick={handleDownload}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors shadow-lg"
+        >
+          <Download size={20} />
+          완성본 저장
+        </button>
+      </div>
+
+      {/* 실제 렌더링될 캔버스 영역 (고정 크기) */}
+      <div
+        ref={canvasRef}
+        style={{
+          width: `${dimensions.width}px`,
+          height: `${dimensions.height}px`,
+          backgroundColor: settings.backgroundColor,
+          color: "#000",
+        }}
+        className={clsx(
+          "relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl",
+          settings.fontFamily === "dotum"
+            ? "font-dotum"
+            : settings.fontFamily === "batang"
+              ? "font-batang"
+              : "font-sans",
+        )}
+      >
+        {settings.mode === "template" ? (
+          <TemplateModeCanvas />
+        ) : (
+          <FreeModeCanvas />
+        )}
+      </div>
+    </div>
+  );
+}

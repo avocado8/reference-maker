@@ -52,6 +52,7 @@ export default function CanvasWorkspace() {
       const dataUrl = await toPng(canvasRef.current, {
         width: dimensions.width,
         height: dimensions.height,
+        pixelRatio: 1,
         filter: (node) => {
           if (!(node instanceof HTMLElement)) return true;
           return node.dataset.exportIgnore !== "true";

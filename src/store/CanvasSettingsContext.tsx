@@ -8,7 +8,7 @@ import type {
 const defaultSettings: CanvasSettings = {
   mode: "template",
   orientation: "portrait",
-  templateType: "single-portrait",
+  templateType: "double-twoshot",
   backgroundColor: "#ffffff",
   cardBackgroundColor: "#ffffff",
   borderColor: "#e5e7eb", // tailwind gray-200
@@ -17,7 +17,7 @@ const defaultSettings: CanvasSettings = {
   baseFontSize: 16,
   borderRadius: 8,
   showShadow: true,
-  textureDensity: 30,
+  textureDensity: 0,
 };
 
 const CanvasSettingsContext = createContext<

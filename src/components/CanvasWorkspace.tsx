@@ -5,7 +5,12 @@ import { Download } from "lucide-react";
 import { toPng } from "html-to-image";
 import TemplateModeCanvas from "./canvas/TemplateModeCanvas";
 import FreeModeCanvas from "./canvas/FreeModeCanvas";
+import StickerLayer from "./canvas/StickerLayer";
 import { getTemplateOrientation } from "../utils/getTemplateOrientation";
+import { getMultiDimensions } from "../utils/getMultiDimensions";
+
+// 인원수 미선택 상태(피커 표시)에 쓰이는 기본 크기
+const MULTI_PICKER_DIMENSIONS = { width: 1200, height: 900 };
 
 export default function CanvasWorkspace() {
   const { settings } = useCanvasSettings();
@@ -14,6 +19,12 @@ export default function CanvasWorkspace() {
   const [scale, setScale] = useState(1);
 
   const getCanvasDimensions = () => {
+    // 다인 템플릿: 인원수에 따라 동적 크기 계산
+    if (settings.mode === "template" && settings.templateType === "multi") {
+      return settings.multiCount !== undefined
+        ? getMultiDimensions(settings.multiCount)
+        : MULTI_PICKER_DIMENSIONS;
+    }
     const orientation =
       settings.mode === "template"
         ? getTemplateOrientation(settings.templateType)
@@ -84,8 +95,8 @@ export default function CanvasWorkspace() {
         </button>
       </div>
 
-      {/* 캔버스 스케일 컨테이너 */}
-      <div ref={containerRef} className="w-full max-w-[1600px]">
+      {/* 캔버스 스케일 컨테이너 (다인 템플릿은 1600px 초과 가능하므로 max-w 제거) */}
+      <div ref={containerRef} className="w-full">
         {/* transform이 layout에 영향 없으므로 실제 시각적 크기만큼 높이 확보 */}
         <div
           style={{
@@ -113,11 +124,33 @@ export default function CanvasWorkspace() {
                   : "font-sans",
             )}
           >
-            {settings.mode === "template" ? (
-              <TemplateModeCanvas />
-            ) : (
-              <FreeModeCanvas />
-            )}
+            {" "}
+            {/* 배경 질감 레이어 */}
+            <div
+              className="absolute inset-0 pointer-events-none z-0"
+              style={{
+                backgroundImage: "url('/textures/noise2.jpg')",
+                backgroundRepeat: "repeat",
+                backgroundSize: "1000px 1000px",
+                opacity: settings.textureDensity / 100,
+              }}
+            />
+            {/* 실제 내용 */}
+            <div className="relative z-10 w-full h-full">
+              {settings.mode === "template" ? (
+                <TemplateModeCanvas />
+              ) : (
+                <FreeModeCanvas />
+              )}
+              <StickerLayer canvasScale={scale} />
+
+              <div
+                className="absolute bottom-2 right-6 text-sm text-neutral-600 select-none"
+                style={{ pointerEvents: "none" }}
+              >
+                @OL__SA
+              </div>
+            </div>
           </div>
         </div>
       </div>

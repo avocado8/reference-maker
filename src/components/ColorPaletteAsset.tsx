@@ -6,25 +6,54 @@ import AssetWrapper from "./AssetWrapper";
 
 function PaletteToolbar({ asset }: { asset: PaletteAssetType }) {
   const { updateAsset } = useAssets();
+  const showAddButton = asset.showAddButton ?? true;
 
   return (
-    <>
-      <span className="text-white text-xs">크기</span>
-      {(["S", "M", "L"] as const).map((s) => (
-        <button
-          key={s}
-          onClick={() => updateAsset(asset.id, { size: s })}
-          className={clsx(
-            "text-xs font-bold px-2 py-1 rounded transition-all",
-            asset.size === s
-              ? "bg-white text-neutral-800"
-              : "text-white bg-white/20 hover:bg-white/30",
-          )}
-        >
-          {s}
-        </button>
-      ))}
-    </>
+    <div className="min-w-[220px]">
+      <p className="text-xs font-semibold text-neutral-300 px-4 py-2 border-b border-neutral-700">
+        컬러 팔레트
+      </p>
+      <div className="flex flex-col gap-3 p-4">
+        {/* 크기 */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-neutral-400">크기</span>
+          <div className="flex gap-1">
+            {(["S", "M", "L"] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => updateAsset(asset.id, { size: s })}
+                className={clsx(
+                  "text-xs font-bold w-8 py-1 rounded transition-all",
+                  asset.size === s
+                    ? "bg-white text-neutral-800"
+                    : "text-white bg-white/20 hover:bg-white/30",
+                )}
+              >
+                {s}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 추가 버튼 표시 여부 */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-neutral-400">추가 버튼</span>
+          <button
+            onClick={() =>
+              updateAsset(asset.id, { showAddButton: !showAddButton })
+            }
+            className={clsx(
+              "text-xs px-3 py-1 rounded transition-colors",
+              showAddButton
+                ? "bg-blue-600 text-white"
+                : "bg-white/20 text-white/70 hover:bg-white/30",
+            )}
+          >
+            {showAddButton ? "표시" : "숨김"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -34,13 +63,14 @@ interface ColorPaletteAssetProps {
 
 export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
   const { updateAsset } = useAssets();
+  const showAddButton = asset.showAddButton ?? true;
 
   const handleAddColor = () => {
     if (asset.colors.length >= 5) return;
     const newColor: ColorItem = {
       id: crypto.randomUUID(),
       color: "#000000",
-      showCaption: true,
+      showCaption: false,
       caption: "Color",
     };
     updateAsset(asset.id, { colors: [...asset.colors, newColor] });
@@ -61,15 +91,15 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
   };
 
   const sizeClasses = {
-    S: "w-10 h-10",
-    M: "w-16 h-16",
-    L: "w-24 h-24",
+    S: "w-8 h-8",
+    M: "w-12 h-12",
+    L: "w-16 h-16",
   };
 
   return (
     <AssetWrapper assetId={asset.id} toolbar={<PaletteToolbar asset={asset} />}>
       <div className="w-full h-full p-4 flex items-center justify-center backdrop-blur">
-        <div className="flex flex-wrap justify-center gap-4 py-10">
+        <div className="flex flex-wrap justify-center gap-1 py-5">
           {asset.colors.map((colorItem) => (
             <div
               key={colorItem.id}
@@ -108,14 +138,15 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
                   onChange={(e) =>
                     handleUpdateColor(colorItem.id, { caption: e.target.value })
                   }
-                  className="text-sm font-bold text-center bg-transparent border-none outline-none w-16"
+                  className="text-xs font-bold text-center bg-transparent border-none outline-none w-16"
                   placeholder="Name"
                 />
               )}
             </div>
           ))}
 
-          {asset.colors.length < 5 && (
+          {/* 추가 버튼: 5개 미만이고 showAddButton이 true일 때만 표시 */}
+          {asset.colors.length < 5 && showAddButton && (
             <button
               onClick={handleAddColor}
               className={clsx(

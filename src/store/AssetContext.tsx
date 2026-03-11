@@ -6,17 +6,25 @@ import type {
   TextAssetType,
   PaletteAssetType,
   FreeAssetType,
+  StickerAssetType,
 } from "../types/assets";
 
 interface AssetContextType {
   assets: (ImageAssetType | TextAssetType | PaletteAssetType)[];
   freeAssets: FreeAssetType[];
   templateSlots: Record<string, string>; // slotId -> assetId
+  stickerAssets: StickerAssetType[];
   addAsset: (type: AssetType, initialData?: any) => string;
   removeAsset: (id: string) => void;
   updateAsset: (id: string, updates: any) => void;
   updateFreeAsset: (assetId: string, updates: Partial<FreeAssetType>) => void;
   setTemplateSlot: (slotId: string, assetId: string) => void;
+  addSticker: () => string;
+  updateSticker: (
+    id: string,
+    updates: Partial<Omit<StickerAssetType, "id">>,
+  ) => void;
+  removeSticker: (id: string) => void;
   clearAll: () => void;
 }
 
@@ -30,6 +38,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   const [templateSlots, setTemplateSlots] = useState<Record<string, string>>(
     {},
   );
+  const [stickerAssets, setStickerAssets] = useState<StickerAssetType[]>([]);
 
   const addAsset = useCallback((type: AssetType, initialData?: any): string => {
     const id = crypto.randomUUID();
@@ -62,7 +71,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
             {
               id: crypto.randomUUID(),
               color: "#3b82f6",
-              showCaption: true,
+              showCaption: false,
               caption: "Primary",
             },
           ],
@@ -114,10 +123,34 @@ export function AssetProvider({ children }: { children: ReactNode }) {
     setTemplateSlots((prev) => ({ ...prev, [slotId]: assetId }));
   }, []);
 
+  const addSticker = useCallback((): string => {
+    const id = crypto.randomUUID();
+    const offset = Math.floor(Math.random() * 100);
+    setStickerAssets((prev) => [
+      ...prev,
+      { id, url: "", scale: 1, x: 80 + offset, y: 80 + offset },
+    ]);
+    return id;
+  }, []);
+
+  const updateSticker = useCallback(
+    (id: string, updates: Partial<Omit<StickerAssetType, "id">>) => {
+      setStickerAssets((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, ...updates } : s)),
+      );
+    },
+    [],
+  );
+
+  const removeSticker = useCallback((id: string) => {
+    setStickerAssets((prev) => prev.filter((s) => s.id !== id));
+  }, []);
+
   const clearAll = useCallback(() => {
     setAssets([]);
     setFreeAssets([]);
     setTemplateSlots({});
+    setStickerAssets([]);
   }, []);
 
   return (
@@ -126,11 +159,15 @@ export function AssetProvider({ children }: { children: ReactNode }) {
         assets,
         freeAssets,
         templateSlots,
+        stickerAssets,
         addAsset,
         removeAsset,
         updateAsset,
         updateFreeAsset,
         setTemplateSlot,
+        addSticker,
+        updateSticker,
+        removeSticker,
         clearAll,
       }}
     >

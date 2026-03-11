@@ -9,6 +9,7 @@ import {
   Text,
   Palette,
   Pencil,
+  Sticker,
 } from "lucide-react";
 import clsx from "clsx";
 import type { CanvasOrientation, TemplateType } from "../types/canvas";
@@ -19,7 +20,7 @@ interface SidebarProps {
 
 export default function Sidebar({ className }: SidebarProps) {
   const { settings, updateSettings } = useCanvasSettings();
-  const { addAsset, clearAll } = useAssets();
+  const { addAsset, addSticker, clearAll } = useAssets();
   const [activeTab, setActiveTab] = useState<"assets" | "settings">("assets");
 
   const handleModeChange = (mode: "template" | "free") => {
@@ -118,25 +119,62 @@ export default function Sidebar({ className }: SidebarProps) {
                     방향
                   </label>
                   {settings.mode === "template" ? (
-                    <select
-                      value={settings.templateType ?? "single-portrait"}
-                      onChange={(e) =>
-                        updateSettings({
-                          templateType: e.target.value as TemplateType,
-                        })
-                      }
-                      className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-sm text-white"
-                    >
-                      <option value="single-portrait">
-                        1인 세로 템플릿 (1200x1600)
-                      </option>
-                      <option value="double-landscape">
-                        2인 가로 템플릿 (1600x1200)
-                      </option>
-                      <option value="double-symmetric">
-                        2인 대칭 템플릿 (1600x1200)
-                      </option>
-                    </select>
+                    <>
+                      <select
+                        value={settings.templateType ?? "single-portrait"}
+                        onChange={(e) => {
+                          const newType = e.target.value as TemplateType;
+                          // multi가 아닌 템플릿으로 변경 시 multiCount 초기화 → 다음에 multi 재선택 시 피커 표시
+                          updateSettings(
+                            newType !== "multi"
+                              ? { templateType: newType, multiCount: undefined }
+                              : { templateType: newType },
+                          );
+                        }}
+                        className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-sm text-white"
+                      >
+                        <option value="single-portrait">
+                          1인 세로 템플릿 (1200x1600)
+                        </option>
+                        <option value="double-symmetric">
+                          2인 대칭 템플릿 (1600x1200)
+                        </option>
+                        <option value="double-twoshot">
+                          2인 투샷 템플릿 (1600x1200)
+                        </option>
+                        <option value="multi">다인 템플릿 (동적 크기)</option>
+                      </select>
+
+                      {/* 다인 템플릿: 인원수 선택 후 변경 버튼 */}
+                      {settings.templateType === "multi" &&
+                        settings.multiCount !== undefined && (
+                          <div className="mt-3">
+                            <label className="block text-xs text-neutral-400 mb-2">
+                              인원수 ({settings.multiCount}명)
+                            </label>
+                            <div className="flex flex-wrap gap-1">
+                              {Array.from({ length: 10 }, (_, i) => i + 1).map(
+                                (n) => (
+                                  <button
+                                    key={n}
+                                    onClick={() =>
+                                      updateSettings({ multiCount: n })
+                                    }
+                                    className={clsx(
+                                      "w-8 h-8 text-xs font-bold rounded-md transition-all",
+                                      settings.multiCount === n
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-neutral-700 text-neutral-300 hover:bg-neutral-600",
+                                    )}
+                                  >
+                                    {n}
+                                  </button>
+                                ),
+                              )}
+                            </div>
+                          </div>
+                        )}
+                    </>
                   ) : (
                     <select
                       value={settings.orientation}
@@ -188,6 +226,29 @@ export default function Sidebar({ className }: SidebarProps) {
                     <option value="batang">KoPub Batang</option>
                   </select>
                 </div>
+
+                <div>
+                  <label className="block text-xs text-neutral-400 mb-1">
+                    배경 노이즈
+                  </label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={settings.textureDensity}
+                    onChange={(e) =>
+                      updateSettings({
+                        textureDensity: parseFloat(e.target.value),
+                      })
+                    }
+                    className="flex-1 accent-white"
+                    title={`크기: ${Math.round(settings.textureDensity * 100)}%`}
+                  />
+                  <span className="ml-2 text-xs text-neutral-400 w-8 text-right shrink-0">
+                    {Math.round(settings.textureDensity)}%
+                  </span>
+                </div>
               </div>
             </section>
           </div>
@@ -196,17 +257,29 @@ export default function Sidebar({ className }: SidebarProps) {
         {activeTab === "assets" && (
           <div className="space-y-4">
             {settings.mode === "template" ? (
-              <div className="text-sm text-neutral-300 bg-neutral-800 rounded-lg p-4 leading-relaxed">
-                <p className="font-bold text-neutral-300 mb-2">템플릿 모드</p>
-                <p>
-                  사전 정의된 템플릿을 활용해 자료를 제작합니다. <br /> 캔버스의
-                  각 영역을 클릭하면 이미지, 텍스트, 팔레트 중 원하는 유형을
-                  선택해 추가할 수 있습니다.
-                </p>
-                <p className="mt-2 text-neutral-400 text-xs">
-                  자료를 추가하면 우상단에 × 버튼이 나타나 삭제할 수 있습니다.
-                </p>
-              </div>
+              <>
+                <div className="text-sm text-neutral-300 bg-neutral-800 rounded-lg p-4 leading-relaxed">
+                  <p className="font-bold text-neutral-300 mb-2">템플릿 모드</p>
+                  <p>
+                    사전 제작된 템플릿을 활용해 자료를 제작합니다. <br />{" "}
+                    캔버스의 각 영역을 클릭하면 이미지, 텍스트, 팔레트 중 원하는
+                    유형을 선택해 추가할 수 있습니다.
+                    <br />
+                    <br />
+                    영역 하단의 설정 버튼으로 사진 크기, 글씨 색 등을 변경할 수
+                    있습니다.
+                  </p>
+                  <p className="mt-2 text-neutral-400 text-xs">
+                    자료를 추가하면 우상단에 × 버튼이 나타나 삭제할 수 있습니다.
+                  </p>
+                </div>
+                <button
+                  onClick={() => addSticker()}
+                  className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                >
+                  <Sticker size={16} /> 스티커 추가
+                </button>
+              </>
             ) : (
               <>
                 <p className="font-bold text-neutral-300 mb-2">
@@ -245,6 +318,13 @@ export default function Sidebar({ className }: SidebarProps) {
                   className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
                 >
                   <Palette size={16} /> 컬러 팔레트 추가
+                </button>
+
+                <button
+                  onClick={() => addSticker()}
+                  className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                >
+                  <Sticker size={16} /> 스티커 추가
                 </button>
               </>
             )}

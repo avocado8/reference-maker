@@ -17,6 +17,7 @@ const defaultSettings: CanvasSettings = {
   baseFontSize: 16,
   borderRadius: 8,
   showShadow: true,
+  textureDensity: 30,
 };
 
 const CanvasSettingsContext = createContext<

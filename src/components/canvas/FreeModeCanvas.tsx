@@ -155,7 +155,7 @@ export default function FreeModeCanvas() {
             key={fa.assetId}
             size={{ width: fa.width, height: fa.height }}
             position={{ x: fa.x, y: fa.y }}
-            onDrag={(e, d) => {
+            onDrag={(_e, d) => {
               const result = getCenterSnapResult(
                 d.x,
                 d.y,
@@ -166,7 +166,7 @@ export default function FreeModeCanvas() {
 
               setGuides(result.guides);
             }}
-            onDragStop={(e, d) => {
+            onDragStop={(_e, d) => {
               const result = getCenterSnapResult(
                 d.x,
                 d.y,
@@ -185,7 +185,7 @@ export default function FreeModeCanvas() {
                 horizontal: null,
               });
             }}
-            onResizeStop={(e, direction, ref, delta, position) => {
+            onResizeStop={(_e, _direction, ref, _delta, position) => {
               updateFreeAsset(fa.assetId, {
                 width: ref.offsetWidth,
                 height: ref.offsetHeight,

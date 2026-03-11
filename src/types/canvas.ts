@@ -21,6 +21,7 @@ export interface CanvasSettings {
   baseFontSize: number;
   borderRadius: number;
   showShadow: boolean;
+  textureDensity: number;
 }
 
 export interface CanvasSettingsContextType {

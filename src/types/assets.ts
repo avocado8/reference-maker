@@ -15,6 +15,8 @@ export interface ImageAssetType extends BaseAssetType {
   attributionText?: string; // 출처 텍스트
 }
 
+export type FontFamily = "sans" | "dotum" | "batang" | "handwrite";
+
 export interface TextAssetType extends BaseAssetType {
   type: "text";
   content: string;
@@ -22,7 +24,12 @@ export interface TextAssetType extends BaseAssetType {
   fontSize?: number; // 폰트 크기 override (px)
   backgroundColor?: string; // 배경 색상 (CSS color)
   textAlign?: "left" | "center" | "right";
+  verticalAlign?: "top" | "middle" | "bottom";
+  fontFamily?: FontFamily;
   fontWeight?: "normal" | "bold";
+  fontStyle?: "normal" | "italic";
+  lineHeight?: number;
+  letterSpacing?: number;
 }
 
 export interface ColorItem {
@@ -50,6 +57,8 @@ export interface StickerAssetType {
   scale: number; // 크기 배율 (0.1 ~ 3), scale=1 → max 200px
   x: number; // 캔버스 좌상단 기준 위치 (px)
   y: number;
+  showAttribution?: boolean; // 출처 표기 on/off
+  attributionText?: string; // 출처 텍스트
 }
 
 // 자유 배치 모드용 에셋 (위치 및 크기 정보 포함)

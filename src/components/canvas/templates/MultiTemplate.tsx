@@ -12,7 +12,7 @@ function CharacterUnit({ index }: { index: number }) {
   return (
     <div className="flex flex-col gap-4 bg-white/40 p-4 rounded-3xl border border-white/60 min-w-0">
       {/* 상단 작은 텍스트 */}
-      <div className="h-14 rounded-xl overflow-hidden bg-neutral-100">
+      <div className="h-14 rounded-xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`multi-${index}-title`}
           placeholder={`${label}. 이름 / 기본정보`}
@@ -20,7 +20,7 @@ function CharacterUnit({ index }: { index: number }) {
       </div>
 
       {/* 상단 큰 이미지 */}
-      <div className="h-[260px] rounded-2xl overflow-hidden bg-neutral-100">
+      <div className="h-[260px] rounded-2xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`multi-${index}-image-main`}
           placeholder={`${label} 상단 이미지`}
@@ -28,7 +28,7 @@ function CharacterUnit({ index }: { index: number }) {
       </div>
 
       {/* 컬러 팔레트 */}
-      <div className="h-[90px] flex justify-center rounded-xl overflow-hidden bg-neutral-100">
+      <div className="h-[90px] flex justify-center rounded-xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`multi-${index}-palette`}
           placeholder={`${label} 컬러 팔레트`}
@@ -36,7 +36,7 @@ function CharacterUnit({ index }: { index: number }) {
       </div>
 
       {/* 중간 설명 텍스트 */}
-      <div className="h-[170px] rounded-xl overflow-hidden bg-neutral-100">
+      <div className="h-[170px] rounded-xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`multi-${index}-desc`}
           placeholder={`${label} 설명`}
@@ -44,7 +44,7 @@ function CharacterUnit({ index }: { index: number }) {
       </div>
 
       {/* 하단 이미지 */}
-      <div className="h-[220px] rounded-2xl overflow-hidden bg-neutral-100">
+      <div className="h-[220px] rounded-2xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`multi-${index}-image-sub`}
           placeholder={`${label} 하단 이미지`}

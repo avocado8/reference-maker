@@ -6,7 +6,6 @@ export type TemplateType =
   | "double-symmetric"
   | "double-twoshot"
   | "multi";
-export type FontFamily = "sans" | "dotum" | "batang";
 
 export interface CanvasSettings {
   mode: CanvasMode;
@@ -17,7 +16,6 @@ export interface CanvasSettings {
   cardBackgroundColor: string;
   borderColor: string;
   titleBarColor: string;
-  fontFamily: FontFamily;
   baseFontSize: number;
   borderRadius: number;
   showShadow: boolean;

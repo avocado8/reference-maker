@@ -10,7 +10,15 @@
 
 @font-face {
   font-family: "KopubWorldBatang";
-  src: url("/fonts/KoPubWorld-Batang-Medium.woff2") format("woff2");
+  src: url("/fonts/KoPubWorld-Batang-Medium.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Handwrite";
+  src: url("/fonts/kangwonSaeum.woff") format("woff");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -20,6 +28,7 @@
   --font-sans: "system-ui", "Avenir", "Helvetica", "Arial", sans-serif;
   --font-dotum: "Pretendard", "Dotum", "Apple SD Gothic Neo", sans-serif;
   --font-batang: "KopubWorldBatang", "Batang", "AppleMyungjo", serif;
+  --font-handwrite: "Handwrite", "Batang", "AppleMyungjo", serif;
 }
 
 @layer base {

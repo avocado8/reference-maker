@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect } from "react";
 import { useCanvasSettings } from "../store/CanvasSettingsContext";
-import clsx from "clsx";
 import { Download } from "lucide-react";
 import { toPng } from "html-to-image";
 import TemplateModeCanvas from "./canvas/TemplateModeCanvas";
@@ -116,14 +115,7 @@ export default function CanvasWorkspace() {
               transform: `scale(${scale})`,
               transformOrigin: "top left",
             }}
-            className={clsx(
-              "relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl",
-              settings.fontFamily === "dotum"
-                ? "font-dotum"
-                : settings.fontFamily === "batang"
-                  ? "font-batang"
-                  : "font-sans",
-            )}
+            className="relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl"
           >
             {" "}
             {/* 배경 질감 레이어 */}

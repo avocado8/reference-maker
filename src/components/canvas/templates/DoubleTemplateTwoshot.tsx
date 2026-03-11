@@ -9,7 +9,7 @@ function SideCharacterCard({
   return (
     <div className="w-[260px] shrink-0 flex flex-col gap-4">
       {/* 이름 */}
-      <div className="h-20 rounded-xl overflow-hidden bg-neutral-100">
+      <div className="h-20 rounded-xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`poster-${prefix}-name`}
           placeholder={
@@ -19,7 +19,7 @@ function SideCharacterCard({
       </div>
 
       {/* 사진 */}
-      <div className="h-[350px] rounded-2xl overflow-hidden bg-neutral-100">
+      <div className="h-[350px] rounded-2xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`poster-${prefix}-image`}
           placeholder={prefix === "a" ? "A 사진" : "B 사진"}
@@ -27,7 +27,7 @@ function SideCharacterCard({
       </div>
 
       {/* 팔레트 */}
-      <div className="h-[110px] rounded-xl overflow-hidden bg-neutral-100">
+      <div className="h-[110px] rounded-xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`poster-${prefix}-palette`}
           placeholder={prefix === "a" ? "A 컬러 팔레트" : "B 컬러 팔레트"}
@@ -35,7 +35,7 @@ function SideCharacterCard({
       </div>
 
       {/* 설명 */}
-      <div className="flex-1 min-h-0 rounded-2xl overflow-hidden bg-neutral-100">
+      <div className="flex-1 min-h-0 rounded-2xl overflow-hidden bg-neutral-100 shadow-md">
         <TemplateZone
           slotId={`poster-${prefix}-desc`}
           placeholder={prefix === "a" ? "A 설명" : "B 설명"}
@@ -70,19 +70,19 @@ function BottomOverlayText({
 
 export default function DoubleTemplateTwoshot() {
   return (
-    <div className="w-full h-full p-8 flex gap-8 bg-white/20">
+    <div className="w-full h-full p-20 flex gap-8 bg-white/20">
       {/* 좌측 정보 */}
       <SideCharacterCard side="left" prefix="a" />
 
       {/* 중앙 영역 */}
       <div className="flex-1 min-w-0 h-full flex flex-col gap-4">
         {/* 큰 제목 */}
-        <div className="h-20 rounded-2xl overflow-hidden bg-neutral-100">
+        <div className="h-20 rounded-2xl overflow-hidden bg-neutral-100 shadow-md">
           <TemplateZone slotId="poster-center-title" placeholder="페어명" />
         </div>
 
         {/* 큰 메인 그림 */}
-        <div className="relative flex-1 min-h-0 rounded-3xl overflow-hidden bg-neutral-100">
+        <div className="relative flex-1 min-h-0 rounded-3xl overflow-hidden bg-neutral-100 shadow-md">
           <TemplateZone
             slotId="poster-center-image"
             placeholder="가운데 큰 메인 그림"

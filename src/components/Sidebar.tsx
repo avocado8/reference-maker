@@ -212,23 +212,6 @@ export default function Sidebar({ className }: SidebarProps) {
 
                 <div>
                   <label className="block text-xs text-neutral-400 mb-1">
-                    폰트
-                  </label>
-                  <select
-                    value={settings.fontFamily}
-                    onChange={(e) =>
-                      updateSettings({ fontFamily: e.target.value as any })
-                    }
-                    className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-sm text-white"
-                  >
-                    <option value="sans">기본 고딕</option>
-                    <option value="dotum">Pretendard</option>
-                    <option value="batang">KoPub Batang</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs text-neutral-400 mb-1">
                     배경 노이즈
                   </label>
                   <input

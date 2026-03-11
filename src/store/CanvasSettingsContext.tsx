@@ -13,7 +13,6 @@ const defaultSettings: CanvasSettings = {
   cardBackgroundColor: "#ffffff",
   borderColor: "#e5e7eb", // tailwind gray-200
   titleBarColor: "#374151", // tailwind gray-700
-  fontFamily: "sans",
   baseFontSize: 16,
   borderRadius: 8,
   showShadow: true,

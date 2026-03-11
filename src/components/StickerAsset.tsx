@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from "react";
 import { Upload, X, Settings } from "lucide-react";
 import { useAssets } from "../store/AssetContext";
 import type { StickerAssetType } from "../types/assets";
+import clsx from "clsx";
 
 interface StickerAssetProps {
   sticker: StickerAssetType;
@@ -27,7 +28,7 @@ export default function StickerAsset({
     oy: 0,
   });
 
-  const BASE_SIZE = 200; // scale=1 일 때 최대 변 길이 (px in canvas space)
+  const BASE_SIZE = 150; // scale=1 일 때 최대 변 길이 (px in canvas space)
   const displaySize = BASE_SIZE * sticker.scale;
 
   // ── 드래그 ─────────────────────────────────────────────
@@ -121,6 +122,7 @@ export default function StickerAsset({
           height: displaySize,
           cursor: isDragging ? "grabbing" : "grab",
           userSelect: "none",
+          backgroundColor: sticker.url ? "transparent" : "white",
         }}
         className="group"
       >
@@ -148,6 +150,13 @@ export default function StickerAsset({
             <span className="text-xs text-neutral-400">스티커 이미지</span>
           </div>
         )}
+
+        <div
+          className="absolute bottom-2 right-4 text-xs text-neutral-400 select-none"
+          style={{ pointerEvents: "none" }}
+        >
+          {sticker.showAttribution && sticker.attributionText}
+        </div>
 
         {/* 컨트롤 버튼들 (hover 시 표시) */}
         <div
@@ -235,6 +244,41 @@ export default function StickerAsset({
                   className="w-full accent-white"
                 />
               </div>
+
+              {/* 출처 표기 on/off */}
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-neutral-400">출처 표기</span>
+                <button
+                  onClick={() =>
+                    updateSticker(sticker.id, {
+                      showAttribution: !sticker.showAttribution,
+                    })
+                  }
+                  className={clsx(
+                    "text-xs px-3 py-1 rounded transition-colors",
+                    sticker.showAttribution
+                      ? "bg-blue-600 text-white"
+                      : "bg-white/20 text-white/70 hover:bg-white/30",
+                  )}
+                >
+                  {sticker.showAttribution ? "ON" : "OFF"}
+                </button>
+              </div>
+
+              {/* 출처 텍스트 입력 (ON일 때만) */}
+              {sticker.showAttribution && (
+                <input
+                  type="text"
+                  value={sticker.attributionText ?? ""}
+                  onChange={(e) =>
+                    updateSticker(sticker.id, {
+                      attributionText: e.target.value,
+                    })
+                  }
+                  placeholder="출처 텍스트 입력..."
+                  className="w-full text-xs bg-neutral-700 text-white rounded px-2 py-1.5 outline-none border border-neutral-600 focus:border-blue-500"
+                />
+              )}
             </div>
           </div>,
           document.body,

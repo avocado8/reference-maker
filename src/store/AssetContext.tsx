@@ -93,7 +93,13 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const removeAsset = useCallback((id: string) => {
-    setAssets((prev) => prev.filter((a) => a.id !== id));
+    setAssets((prev) => {
+      const assetToRemove = prev.find((a) => a.id === id);
+      if (assetToRemove?.type === "image" && assetToRemove.url.startsWith("blob:")) {
+        URL.revokeObjectURL(assetToRemove.url);
+      }
+      return prev.filter((a) => a.id !== id);
+    });
     setFreeAssets((prev) => prev.filter((a) => a.assetId !== id));
     setTemplateSlots((prev) => {
       const next = { ...prev };
@@ -143,15 +149,31 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   );
 
   const removeSticker = useCallback((id: string) => {
-    setStickerAssets((prev) => prev.filter((s) => s.id !== id));
+    setStickerAssets((prev) => {
+      const stickerToRemove = prev.find((s) => s.id === id);
+      if (stickerToRemove?.url.startsWith("blob:")) {
+        URL.revokeObjectURL(stickerToRemove.url);
+      }
+      return prev.filter((s) => s.id !== id);
+    });
   }, []);
 
   const clearAll = useCallback(() => {
+    assets.forEach((a) => {
+      if (a.type === "image" && a.url.startsWith("blob:")) {
+        URL.revokeObjectURL(a.url);
+      }
+    });
+    stickerAssets.forEach((s) => {
+      if (s.url.startsWith("blob:")) {
+        URL.revokeObjectURL(s.url);
+      }
+    });
     setAssets([]);
     setFreeAssets([]);
     setTemplateSlots({});
     setStickerAssets([]);
-  }, []);
+  }, [assets, stickerAssets]);
 
   return (
     <AssetContext.Provider

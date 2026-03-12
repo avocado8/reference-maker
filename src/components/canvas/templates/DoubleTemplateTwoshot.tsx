@@ -70,7 +70,7 @@ function BottomOverlayText({
 
 export default function DoubleTemplateTwoshot() {
   return (
-    <div className="w-full h-full p-20 flex gap-8 bg-white/20">
+    <div className="w-full h-full p-20 flex gap-8">
       {/* 좌측 정보 */}
       <SideCharacterCard side="left" prefix="a" />
 

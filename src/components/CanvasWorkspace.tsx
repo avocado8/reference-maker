@@ -143,17 +143,47 @@ export default function CanvasWorkspace() {
                       ? `linear-gradient(${settings.gradientAngle ?? 180}deg, ${settings.gradientColorStart ?? "#ffffff"}, ${settings.gradientColorEnd ?? "#e5e7eb"})`
                       : (settings.backgroundColor ?? "transparent"),
                   color: "#000",
-                  // transform: `scale(${scale})`,
-                  // transformOrigin: "top left",
                 }}
                 className="relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl"
               >
-                {" "}
+                {/* 배경 이미지 레이어 */}
+                {settings.backgroundType === "image" &&
+                  settings.backgroundImage && (
+                    <>
+                      {/* 1. 흐릿한 배경 (여백 채우기용) */}
+                      {settings.enableBlurredBackground && (
+                        <div
+                          className="absolute inset-0 z-0 scale-110"
+                          style={{
+                            backgroundImage: `url(${settings.backgroundImage})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            filter: "blur(40px) brightness(0.8)",
+                          }}
+                        />
+                      )}
+                      {/* 2. 메인 배경 이미지 */}
+                      <div
+                        className="absolute inset-0 z-0"
+                        style={{
+                          backgroundImage: `url(${settings.backgroundImage})`,
+                          backgroundSize: `${settings.backgroundImageScale ?? 100}%`,
+                          backgroundPosition: "center",
+                          backgroundRepeat: "no-repeat",
+                        }}
+                      />
+                    </>
+                  )}{" "}
                 {/* 배경 질감 레이어 */}
                 <div
                   className="absolute inset-0 pointer-events-none z-0"
                   style={{
-                    backgroundImage: "url('/textures/noise2.jpg')",
+                    backgroundImage:
+                      settings.textureType === "dark"
+                        ? "url('/textures/noise2.jpg')"
+                        : settings.textureType === "light"
+                          ? "url('/textures/lightnoise.jpg')"
+                          : "none",
                     backgroundRepeat: "repeat",
                     backgroundSize: "1000px 1000px",
                     opacity: settings.textureDensity / 100,

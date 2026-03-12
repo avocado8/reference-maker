@@ -19,8 +19,12 @@ export interface CanvasSettings {
   baseFontSize: number;
   borderRadius: number;
   showShadow: boolean;
+  textureType: "none" | "dark" | "light";
   textureDensity: number;
-  backgroundType?: "solid" | "gradient";
+  backgroundType?: "solid" | "gradient" | "image";
+  backgroundImage?: string;
+  backgroundImageScale?: number;
+  enableBlurredBackground?: boolean;
   gradientColorStart?: string;
   gradientColorEnd?: string;
   gradientAngle?: number;

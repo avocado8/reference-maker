@@ -16,12 +16,16 @@ const defaultSettings: CanvasSettings = {
   baseFontSize: 16,
   borderRadius: 8,
   showShadow: true,
+  textureType: "none",
   textureDensity: 0,
   backgroundType: "solid",
   gradientColorStart: "#ffffff",
   gradientColorEnd: "#e5e7eb",
   gradientAngle: 180,
   multiCount: 4,
+  backgroundImage: "",
+  backgroundImageScale: 100,
+  enableBlurredBackground: false,
 };
 
 const CanvasSettingsContext = createContext<
@@ -32,10 +36,27 @@ export function CanvasSettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<CanvasSettings>(defaultSettings);
 
   const updateSettings = (newSettings: Partial<CanvasSettings>) => {
-    setSettings((prev) => ({ ...prev, ...newSettings }));
+    setSettings((prev) => {
+      // 배경 이미지가 변경되는 경우 이전 blob URL 해제
+      if (
+        newSettings.backgroundImage !== undefined &&
+        prev.backgroundImage &&
+        prev.backgroundImage !== newSettings.backgroundImage &&
+        prev.backgroundImage.startsWith("blob:")
+      ) {
+        URL.revokeObjectURL(prev.backgroundImage);
+      }
+      return { ...prev, ...newSettings };
+    });
   };
 
   const resetSettings = () => {
+    if (
+      settings.backgroundImage &&
+      settings.backgroundImage.startsWith("blob:")
+    ) {
+      URL.revokeObjectURL(settings.backgroundImage);
+    }
     setSettings(defaultSettings);
   };
 

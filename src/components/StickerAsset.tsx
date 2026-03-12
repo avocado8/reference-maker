@@ -163,7 +163,7 @@ export default function StickerAsset({
 
               {/* 출처 텍스트: 회전된 이미지의 우측 하단에 고정 */}
               <div
-                className="text-xs mt-1 text-neutral-400 select-none text-center"
+                className="text-xs mt-1 text-neutral-400 select-none text-center opacity-80"
                 style={{ pointerEvents: "none" }}
               >
                 {sticker.showAttribution && sticker.attributionText}

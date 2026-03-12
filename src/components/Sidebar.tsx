@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useCanvasSettings } from "../store/CanvasSettingsContext";
 import { useAssets } from "../store/AssetContext";
 import {
@@ -9,8 +9,10 @@ import {
   Palette,
   Pencil,
   Sticker,
+  X,
 } from "lucide-react";
 import clsx from "clsx";
+import SliderControl from "./SliderControl";
 import type { CanvasOrientation, TemplateType } from "../types/canvas";
 
 interface SidebarProps {
@@ -21,6 +23,7 @@ export default function Sidebar({ className }: SidebarProps) {
   const { settings, updateSettings } = useCanvasSettings();
   const { addAsset, addSticker, clearAll } = useAssets();
   const [activeTab, setActiveTab] = useState<"info" | "settings">("settings");
+  const bgImageInputRef = useRef<HTMLInputElement>(null);
 
   const handleModeChange = (mode: "template" | "free") => {
     if (settings.mode === mode) return;
@@ -198,6 +201,7 @@ export default function Sidebar({ className }: SidebarProps) {
                       [
                         { value: "solid", label: "단색" },
                         { value: "gradient", label: "그라데이션" },
+                        { value: "image", label: "이미지" },
                       ] as const
                     ).map(({ value, label }) => (
                       <button
@@ -231,7 +235,7 @@ export default function Sidebar({ className }: SidebarProps) {
                         {settings.backgroundColor}
                       </span>
                     </div>
-                  ) : (
+                  ) : settings.backgroundType === "gradient" ? (
                     <div className="space-y-4 bg-neutral-800/50 p-3 rounded-lg border border-neutral-700">
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-neutral-400">시작색</span>
@@ -291,6 +295,111 @@ export default function Sidebar({ className }: SidebarProps) {
                         />
                       </div>
                     </div>
+                  ) : (
+                    <div className="space-y-4 bg-neutral-800/50 p-3 rounded-lg border border-neutral-700">
+                      <div className="space-y-3">
+                        <span className="text-xs text-neutral-400 block">
+                          배경 이미지
+                        </span>
+
+                        {settings.backgroundImage ? (
+                          <div className="relative group rounded-md overflow-hidden bg-neutral-900 border border-neutral-700">
+                            <img
+                              src={settings.backgroundImage}
+                              alt="Background preview"
+                              className="w-full h-24 object-cover opacity-80"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                              <button
+                                onClick={() => bgImageInputRef.current?.click()}
+                                className="bg-white/10 hover:bg-white/20 p-2 rounded-full backdrop-blur-sm transition"
+                                title="이미지 변경"
+                              >
+                                <ImageIcon size={18} className="text-white" />
+                              </button>
+                            </div>
+                            <button
+                              onClick={() =>
+                                updateSettings({ backgroundImage: "" })
+                              }
+                              className="absolute top-1 right-1 bg-red-500/80 hover:bg-red-500 p-1 rounded-full text-white shadow-lg transition"
+                              title="이미지 삭제"
+                            >
+                              <X size={12} />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => bgImageInputRef.current?.click()}
+                            className="w-full h-24 rounded-lg border-2 border-dashed border-neutral-700 hover:border-neutral-500 flex flex-col items-center justify-center gap-2 text-neutral-500 hover:text-neutral-400 transition-all bg-neutral-800/30"
+                          >
+                            <ImageIcon size={24} />
+                            <span className="text-xs">이미지 업로드</span>
+                          </button>
+                        )}
+
+                        {settings.backgroundImage && (
+                          <div className="pt-2">
+                            <SliderControl
+                              label="배경 크기"
+                              value={settings.backgroundImageScale ?? 100}
+                              onChange={(val) =>
+                                updateSettings({ backgroundImageScale: val })
+                              }
+                              min={10}
+                              max={300}
+                              step={1}
+                            />
+                          </div>
+                        )}
+
+                        {settings.backgroundImage && (
+                          <div className="flex items-center justify-between pt-2">
+                            <span className="text-xs text-neutral-400">
+                              배경 흐림 효과
+                            </span>
+                            <button
+                              onClick={() =>
+                                updateSettings({
+                                  enableBlurredBackground:
+                                    !settings.enableBlurredBackground,
+                                })
+                              }
+                              className={clsx(
+                                "w-10 h-5 rounded-full p-1 transition-colors",
+                                settings.enableBlurredBackground
+                                  ? "bg-blue-600"
+                                  : "bg-neutral-700",
+                              )}
+                            >
+                              <div
+                                className={clsx(
+                                  "w-3 h-3 bg-white rounded-full transition-transform",
+                                  settings.enableBlurredBackground
+                                    ? "translate-x-5"
+                                    : "translate-x-0",
+                                )}
+                              />
+                            </button>
+                          </div>
+                        )}
+
+                        <input
+                          type="file"
+                          ref={bgImageInputRef}
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              const url = URL.createObjectURL(file);
+                              updateSettings({ backgroundImage: url });
+                            }
+                            e.target.value = "";
+                          }}
+                          className="hidden"
+                        />
+                      </div>
+                    </div>
                   )}
                 </div>
 
@@ -298,23 +407,57 @@ export default function Sidebar({ className }: SidebarProps) {
                   <label className="block text-xs text-neutral-400 mb-1">
                     배경 노이즈
                   </label>
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    step="1"
-                    value={settings.textureDensity}
-                    onChange={(e) =>
-                      updateSettings({
-                        textureDensity: parseFloat(e.target.value),
-                      })
-                    }
-                    className="flex-1 accent-white"
-                    title={`크기: ${Math.round(settings.textureDensity * 100)}%`}
-                  />
-                  <span className="ml-2 text-xs text-neutral-400 w-8 text-right shrink-0">
-                    {Math.round(settings.textureDensity)}%
-                  </span>
+                  {/* none / dark / light 선택 */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => updateSettings({ textureType: "none" })}
+                      className={clsx(
+                        "flex-1 py-2 rounded-lg border transition-colors",
+                        settings.textureType === "none"
+                          ? "border-blue-500 bg-blue-500/10"
+                          : "border-neutral-700 bg-neutral-800",
+                      )}
+                    >
+                      <span className="text-xs">없음</span>
+                    </button>
+                    <button
+                      onClick={() => updateSettings({ textureType: "dark" })}
+                      className={clsx(
+                        "flex-1 py-2 rounded-lg border transition-colors",
+                        settings.textureType === "dark"
+                          ? "border-blue-500 bg-blue-500/10"
+                          : "border-neutral-700 bg-neutral-800",
+                      )}
+                    >
+                      <span className="text-xs">어두운 노이즈</span>
+                    </button>
+                    <button
+                      onClick={() => updateSettings({ textureType: "light" })}
+                      className={clsx(
+                        "flex-1 py-2 rounded-lg border transition-colors",
+                        settings.textureType === "light"
+                          ? "border-blue-500 bg-blue-500/10"
+                          : "border-neutral-700 bg-neutral-800",
+                      )}
+                    >
+                      <span className="text-xs">밝은 노이즈</span>
+                    </button>
+                  </div>
+
+                  {settings.textureType !== "none" && (
+                    <div className="pt-2">
+                      <SliderControl
+                        label="노이즈 크기"
+                        value={settings.textureDensity}
+                        onChange={(val) =>
+                          updateSettings({ textureDensity: val })
+                        }
+                        min={0}
+                        max={100}
+                        step={1}
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <button

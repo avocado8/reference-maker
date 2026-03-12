@@ -118,13 +118,11 @@ function TextToolbar({
           <input
             type="color"
             value={activeStyles.color}
-            onMouseDown={onSaveSelection}
-            onChange={(e) =>
-              applyOrUpdate(
-                { color: e.target.value },
-                { color: e.target.value },
-              )
-            }
+            onMouseDown={() => onBeginSpanEdit({ color: activeStyles.color })}
+            onChange={(e) => {
+              const applied = onUpdateCurrentSpan({ color: e.target.value });
+              if (!applied) updateAsset(asset.id, { color: e.target.value });
+            }}
             className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
           />
         </div>
@@ -407,10 +405,11 @@ export default function TextAsset({ asset }: TextAssetProps) {
     }
   }, []);
 
-  // ── 슬라이더용: mousedown 시 span 생성 후 currentSpanRef에 저장 ────────
+  // ── 슬라이더/컬러피커용: mousedown 시 span 생성 후 currentSpanRef에 저장 ────────
   const beginSpanEdit = useCallback(
     (initialStyles: Record<string, string>): boolean => {
       saveSelection();
+      currentSpanRef.current = null; // 이전 stale 참조 초기화
       const range = savedRangeRef.current;
       if (!range || range.collapsed) return false;
 
@@ -426,6 +425,14 @@ export default function TextAsset({ asset }: TextAssetProps) {
         span.appendChild(fragment);
         range.insertNode(span);
       }
+
+      // 중첩 span의 동일 속성이 새 span을 override하는 것을 방지
+      Object.keys(initialStyles).forEach((prop) => {
+        const cssProp = prop.replace(/([A-Z])/g, "-$1").toLowerCase();
+        span.querySelectorAll<HTMLElement>("[style]").forEach((el) => {
+          el.style.removeProperty(cssProp);
+        });
+      });
 
       editorRef.current?.normalize();
       currentSpanRef.current = span;

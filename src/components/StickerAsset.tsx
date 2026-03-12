@@ -135,23 +135,40 @@ export default function StickerAsset({
             transform: `rotate(${sticker.rotate}deg)`,
             transformOrigin: "center center",
             backgroundColor: sticker.url ? "transparent" : "white",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           {/* 이미지 본체 */}
           {sticker.url ? (
-            <img
-              src={sticker.url}
-              alt=""
-              draggable={false}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "contain",
-                filter:
-                  "drop-shadow(0px 4px 8px rgba(0,0,0,0.1)) drop-shadow(0px 1px 3px rgba(0,0,0,0.3))",
-                pointerEvents: "none",
-              }}
-            />
+            <>
+              <img
+                src={sticker.url}
+                alt=""
+                draggable={false}
+                style={{
+                  maxWidth: "100%",
+                  maxHeight: "100%",
+                  width: "auto",
+                  height: "auto",
+                  objectFit: "contain",
+                  filter:
+                    "drop-shadow(0px 4px 8px rgba(0,0,0,0.1)) drop-shadow(0px 1px 3px rgba(0,0,0,0.3))",
+                  pointerEvents: "none",
+                  display: "block",
+                }}
+              />
+
+              {/* 출처 텍스트: 회전된 이미지의 우측 하단에 고정 */}
+              <div
+                className="text-xs mt-1 text-neutral-400 select-none text-center"
+                style={{ pointerEvents: "none" }}
+              >
+                {sticker.showAttribution && sticker.attributionText}
+              </div>
+            </>
           ) : (
             <div
               className="w-full h-full rounded-xl border-2 border-dashed border-neutral-400 flex flex-col items-center justify-center gap-2 bg-white/10"
@@ -161,14 +178,6 @@ export default function StickerAsset({
               <span className="text-xs text-neutral-400">스티커 이미지</span>
             </div>
           )}
-
-          {/* 출처 텍스트: 회전된 이미지의 우측 하단에 고정 */}
-          <div
-            className="w-full text-xs flex mt-1 justify-center text-neutral-400 select-none"
-            style={{ pointerEvents: "none" }}
-          >
-            {sticker.showAttribution && sticker.attributionText}
-          </div>
         </div>
 
         {/* 컨트롤 버튼들 (hover 시 표시) */}

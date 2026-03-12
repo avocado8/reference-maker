@@ -58,7 +58,7 @@ export default function Sidebar({ className }: SidebarProps) {
               : "text-neutral-400 hover:text-white",
           )}
         >
-          설명서
+          안내
         </button>
         <button
           onClick={() => setActiveTab("settings")}

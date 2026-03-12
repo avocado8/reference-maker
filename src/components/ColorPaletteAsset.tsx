@@ -110,10 +110,10 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
   return (
     <AssetWrapper assetId={asset.id} toolbar={<PaletteToolbar asset={asset} />}>
       <div
-        className="w-full h-full p-4 flex items-center justify-center backdrop-blur"
+        className="w-full h-full p-4 flex items-center justify-center"
         style={{ background: getBackgroundStyle(asset) }}
       >
-        <div className="flex flex-wrap gap-1 justify-center py-5">
+        <div className="grid grid-flow-col auto-cols-max gap-1 justify-center py-5">
           {asset.colors.map((colorItem) => (
             <div
               key={colorItem.id}

@@ -50,6 +50,12 @@ export default function CanvasWorkspace() {
     if (!canvasRef.current) return;
     try {
       setIsLoading(true);
+      const originalDPR = window.devicePixelRatio;
+      Object.defineProperty(window, "devicePixelRatio", {
+        get: () => 1,
+        configurable: true,
+      });
+
       const dataUrl = await toPng(canvasRef.current, {
         width: dimensions.width,
         height: dimensions.height,
@@ -63,6 +69,12 @@ export default function CanvasWorkspace() {
           transformOrigin: "top left",
         },
       });
+
+      Object.defineProperty(window, "devicePixelRatio", {
+        get: () => originalDPR,
+        configurable: true,
+      });
+
       const link = document.createElement("a");
       link.download = `character-sheet-${Date.now()}.png`;
       link.href = dataUrl;
@@ -157,7 +169,7 @@ export default function CanvasWorkspace() {
                   <StickerLayer canvasScale={scale} />
 
                   <div
-                    className="absolute bottom-2 right-6 text-sm text-neutral-400 select-none"
+                    className="absolute bottom-2 right-4 text-sm text-neutral-400 select-none"
                     style={{ pointerEvents: "none" }}
                   >
                     @OL__SA

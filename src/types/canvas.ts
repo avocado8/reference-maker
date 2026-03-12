@@ -11,7 +11,7 @@ export interface CanvasSettings {
   mode: CanvasMode;
   orientation: CanvasOrientation;
   templateType?: TemplateType;
-  multiCount?: number; // 다인 템플릿 인원수 (undefined = 미선택 → 픽커 표시)
+  multiCount: number; // 다인 템플릿 인원수 (미선택/기본값 4)
   backgroundColor: string;
   cardBackgroundColor: string;
   borderColor: string;

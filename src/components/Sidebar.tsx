@@ -20,7 +20,7 @@ interface SidebarProps {
 export default function Sidebar({ className }: SidebarProps) {
   const { settings, updateSettings } = useCanvasSettings();
   const { addAsset, addSticker, clearAll } = useAssets();
-  const [activeTab, setActiveTab] = useState<"assets" | "settings">("assets");
+  const [activeTab, setActiveTab] = useState<"info" | "settings">("settings");
 
   const handleModeChange = (mode: "template" | "free") => {
     if (settings.mode === mode) return;
@@ -50,10 +50,10 @@ export default function Sidebar({ className }: SidebarProps) {
 
       <div className="flex bg-neutral-800 p-1 m-4 rounded-lg">
         <button
-          onClick={() => setActiveTab("assets")}
+          onClick={() => setActiveTab("info")}
           className={clsx(
             "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
-            activeTab === "assets"
+            activeTab === "info"
               ? "bg-neutral-600 text-white shadow"
               : "text-neutral-400 hover:text-white",
           )}
@@ -145,34 +145,33 @@ export default function Sidebar({ className }: SidebarProps) {
                       </select>
 
                       {/* 다인 템플릿: 인원수 선택 후 변경 버튼 */}
-                      {settings.templateType === "multi" &&
-                        settings.multiCount !== undefined && (
-                          <div className="mt-3">
-                            <label className="block text-xs text-neutral-400 mb-2">
-                              인원수 ({settings.multiCount}명)
-                            </label>
-                            <div className="flex flex-wrap gap-1">
-                              {Array.from({ length: 10 }, (_, i) => i + 1).map(
-                                (n) => (
-                                  <button
-                                    key={n}
-                                    onClick={() =>
-                                      updateSettings({ multiCount: n })
-                                    }
-                                    className={clsx(
-                                      "w-8 h-8 text-xs font-bold rounded-md transition-all",
-                                      settings.multiCount === n
-                                        ? "bg-blue-600 text-white"
-                                        : "bg-neutral-700 text-neutral-300 hover:bg-neutral-600",
-                                    )}
-                                  >
-                                    {n}
-                                  </button>
-                                ),
-                              )}
-                            </div>
+                      {settings.templateType === "multi" && (
+                        <div className="mt-3">
+                          <label className="block text-xs text-neutral-400 mb-2">
+                            인원수 ({settings.multiCount}명)
+                          </label>
+                          <div className="flex flex-wrap gap-1">
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map(
+                              (n) => (
+                                <button
+                                  key={n}
+                                  onClick={() =>
+                                    updateSettings({ multiCount: n })
+                                  }
+                                  className={clsx(
+                                    "w-8 h-8 text-xs font-bold rounded-md transition-all",
+                                    settings.multiCount === n
+                                      ? "bg-blue-600 text-white"
+                                      : "bg-neutral-700 text-neutral-300 hover:bg-neutral-600",
+                                  )}
+                                >
+                                  {n}
+                                </button>
+                              ),
+                            )}
                           </div>
-                        )}
+                        </div>
+                      )}
                     </>
                   ) : (
                     <select
@@ -329,7 +328,7 @@ export default function Sidebar({ className }: SidebarProps) {
           </div>
         )}
 
-        {activeTab === "assets" && (
+        {activeTab === "info" && (
           <div className="space-y-4">
             {settings.mode === "template" ? (
               <>

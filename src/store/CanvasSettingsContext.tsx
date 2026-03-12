@@ -21,6 +21,7 @@ const defaultSettings: CanvasSettings = {
   gradientColorStart: "#ffffff",
   gradientColorEnd: "#e5e7eb",
   gradientAngle: 180,
+  multiCount: 4,
 };
 
 const CanvasSettingsContext = createContext<

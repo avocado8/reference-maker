@@ -28,7 +28,7 @@ function CharacterUnit({ index }: { index: number }) {
       </div>
 
       {/* 컬러 팔레트 */}
-      <div className="h-[90px] flex justify-center rounded-xl overflow-hidden">
+      <div className="h-[120px] flex justify-center rounded-xl overflow-hidden">
         <TemplateZone
           slotId={`multi-${index}-palette`}
           placeholder={`${label} 컬러 팔레트`}

@@ -7,7 +7,7 @@
  */
 
 export const MULTI_UNIT_WIDTH = 360; // 캐릭터 카드 1개 너비 (px)
-export const MULTI_UNIT_HEIGHT = 892; // 캐릭터 카드 1개 높이 (px)
+export const MULTI_UNIT_HEIGHT = 922; // 캐릭터 카드 1개 높이 (px)
 export const MULTI_GAP = 24; // gap-6 (px)
 export const MULTI_PADDING = 32; // p-8 (px, 한쪽)
 
@@ -38,13 +38,8 @@ export const getMultiDimensions = (
   const cols = getMultiCols(count);
   const rows = Math.ceil(count / cols);
   return {
-    width:
-      MULTI_UNIT_WIDTH * cols +
-      MULTI_GAP * (cols - 1) +
-      MULTI_PADDING * 2,
+    width: MULTI_UNIT_WIDTH * cols + MULTI_GAP * (cols - 1) + MULTI_PADDING * 2,
     height:
-      MULTI_UNIT_HEIGHT * rows +
-      MULTI_GAP * (rows - 1) +
-      MULTI_PADDING * 2,
+      MULTI_UNIT_HEIGHT * rows + MULTI_GAP * (rows - 1) + MULTI_PADDING * 2,
   };
 };

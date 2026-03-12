@@ -19,9 +19,11 @@ export default function SliderControl({
   unit = "",
   onChange,
 }: SliderControlProps) {
+  const [rangeValue, setRangeValue] = useState(value);
   const [inputValue, setInputValue] = useState(value.toString());
 
   useEffect(() => {
+    setRangeValue(value);
     setInputValue(value.toString());
   }, [value]);
 
@@ -56,8 +58,13 @@ export default function SliderControl({
         min={min}
         max={max}
         step={step}
-        value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        value={rangeValue}
+        onChange={(e) => {
+          const v = Number(e.target.value);
+          setRangeValue(v);
+          setInputValue(v.toString());
+          onChange(v);
+        }}
         className="flex-1 accent-white text-xs"
       />
       <div className="flex items-center justify-end w-12 shrink-0">

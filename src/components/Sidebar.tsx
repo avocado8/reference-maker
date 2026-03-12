@@ -58,7 +58,7 @@ export default function Sidebar({ className }: SidebarProps) {
               : "text-neutral-400 hover:text-white",
           )}
         >
-          자료 추가
+          설명서
         </button>
         <button
           onClick={() => setActiveTab("settings")}
@@ -69,7 +69,7 @@ export default function Sidebar({ className }: SidebarProps) {
               : "text-neutral-400 hover:text-white",
           )}
         >
-          스타일 설정
+          스타일 수정
         </button>
       </div>
 
@@ -317,6 +317,13 @@ export default function Sidebar({ className }: SidebarProps) {
                     {Math.round(settings.textureDensity)}%
                   </span>
                 </div>
+
+                <button
+                  onClick={() => addSticker()}
+                  className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                >
+                  <Sticker size={16} /> 스티커 추가
+                </button>
               </div>
             </section>
           </div>
@@ -345,12 +352,6 @@ export default function Sidebar({ className }: SidebarProps) {
                     자료를 추가하면 우상단에 × 버튼이 나타나 삭제할 수 있습니다.
                   </p>
                 </div>
-                <button
-                  onClick={() => addSticker()}
-                  className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
-                >
-                  <Sticker size={16} /> 스티커 추가
-                </button>
               </>
             ) : (
               <>

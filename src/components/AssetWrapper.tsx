@@ -15,6 +15,7 @@ interface AssetWrapperProps {
  * - 우상단 X 버튼으로 에셋 삭제
  * - 하단 얇은 핸들바(asset-drag-handle): hover 시 표시, 드래그하면 자유 배치 모드에서 에셋 이동
  * - 핸들바 우측 ⚙ 버튼: 클릭 시 portal 팝오버로 상세 설정 표시 (overflow 클리핑 없음)
+ * - 팝오버는 상단 드래그 핸들로 위치 이동 가능
  */
 export default function AssetWrapper({
   assetId,
@@ -23,6 +24,7 @@ export default function AssetWrapper({
 }: AssetWrapperProps) {
   const { removeAsset } = useAssets();
   const [isOpen, setIsOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties>({});
@@ -32,14 +34,12 @@ export default function AssetWrapper({
     const rect = barRef.current.getBoundingClientRect();
     const popoverWidth = 280;
 
-    // 우측에 공간이 있으면 우측, 없으면 좌측에 배치 (에셋을 가리지 않음)
     let left = rect.right + 8;
     if (left + popoverWidth > window.innerWidth - 8) {
       left = rect.left - popoverWidth - 8;
     }
     left = Math.max(8, left);
 
-    // 하단이 뷰포트를 벗어나면 위로 올림
     let top = rect.top;
     if (top + 400 > window.innerHeight) {
       top = Math.max(8, window.innerHeight - 400);
@@ -54,7 +54,9 @@ export default function AssetWrapper({
     const handleClose = (e: MouseEvent) => {
       if (
         !popoverRef.current?.contains(e.target as Node) &&
-        !barRef.current?.contains(e.target as Node)
+        !barRef.current?.contains(e.target as Node) &&
+        // 에셋 내부 클릭 시 툴바 닫히지 않음
+        !wrapperRef.current?.contains(e.target as Node)
       ) {
         setIsOpen(false);
       }
@@ -68,8 +70,32 @@ export default function AssetWrapper({
     };
   }, [isOpen]);
 
+  // ── 팝오버 드래그 ────────────────────────────────────────────────────
+  const onPopoverDragStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startLeft = typeof popoverStyle.left === "number" ? popoverStyle.left : 0;
+    const startTop = typeof popoverStyle.top === "number" ? popoverStyle.top : 0;
+
+    const onMove = (ev: MouseEvent) => {
+      setPopoverStyle((prev) => ({
+        ...prev,
+        left: startLeft + ev.clientX - startX,
+        top: startTop + ev.clientY - startY,
+      }));
+    };
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
   return (
-    <div className="relative group w-full h-full overflow-hidden">
+    <div ref={wrapperRef} className="relative group w-full h-full overflow-hidden">
       {/* 에셋 콘텐츠 */}
       {children}
 
@@ -116,6 +142,18 @@ export default function AssetWrapper({
             className="bg-neutral-800 border border-neutral-600 rounded-lg shadow-2xl overflow-hidden"
             onMouseDown={(e) => e.stopPropagation()}
           >
+            {/* 드래그 핸들 */}
+            <div
+              onMouseDown={onPopoverDragStart}
+              className="h-4 flex items-center justify-center cursor-grab active:cursor-grabbing bg-neutral-900/50 hover:bg-neutral-700/60 transition-colors"
+              title="드래그하여 이동"
+            >
+              <div className="flex gap-0.5">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="w-0.5 h-0.5 rounded-full bg-neutral-500" />
+                ))}
+              </div>
+            </div>
             {toolbar}
           </div>,
           document.body,

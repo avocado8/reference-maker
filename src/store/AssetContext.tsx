@@ -128,7 +128,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
     const offset = Math.floor(Math.random() * 100);
     setStickerAssets((prev) => [
       ...prev,
-      { id, url: "", scale: 1, x: 80 + offset, y: 80 + offset },
+      { id, url: "", scale: 1, x: 80 + offset, y: 80 + offset, rotate: 0 },
     ]);
     return id;
   }, []);

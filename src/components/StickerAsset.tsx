@@ -122,40 +122,52 @@ export default function StickerAsset({
           height: displaySize,
           cursor: isDragging ? "grabbing" : "grab",
           userSelect: "none",
-          backgroundColor: sticker.url ? "transparent" : "white",
         }}
         className="group"
       >
-        {/* 이미지 본체 */}
-        {sticker.url ? (
-          <img
-            src={sticker.url}
-            alt=""
-            draggable={false}
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-              filter:
-                "drop-shadow(0px 4px 8px rgba(0,0,0,0.1)) drop-shadow(0px 1px 3px rgba(0,0,0,0.3))",
-              pointerEvents: "none",
-            }}
-          />
-        ) : (
+        {/* 회전 적용 wrapper: 이미지 + 출처 텍스트가 함께 회전 */}
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+            transform: `rotate(${sticker.rotate}deg)`,
+            transformOrigin: "center center",
+            backgroundColor: sticker.url ? "transparent" : "white",
+          }}
+        >
+          {/* 이미지 본체 */}
+          {sticker.url ? (
+            <img
+              src={sticker.url}
+              alt=""
+              draggable={false}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                filter:
+                  "drop-shadow(0px 4px 8px rgba(0,0,0,0.1)) drop-shadow(0px 1px 3px rgba(0,0,0,0.3))",
+                pointerEvents: "none",
+              }}
+            />
+          ) : (
+            <div
+              className="w-full h-full rounded-xl border-2 border-dashed border-neutral-400 flex flex-col items-center justify-center gap-2 bg-white/10"
+              style={{ pointerEvents: "none" }}
+            >
+              <Upload size={24} className="text-neutral-400" />
+              <span className="text-xs text-neutral-400">스티커 이미지</span>
+            </div>
+          )}
+
+          {/* 출처 텍스트: 회전된 이미지의 우측 하단에 고정 */}
           <div
-            className="w-full h-full rounded-xl border-2 border-dashed border-neutral-400 flex flex-col items-center justify-center gap-2 bg-white/10"
+            className="absolute bottom-2 right-4 text-xs text-neutral-400 select-none"
             style={{ pointerEvents: "none" }}
           >
-            <Upload size={24} className="text-neutral-400" />
-            <span className="text-xs text-neutral-400">스티커 이미지</span>
+            {sticker.showAttribution && sticker.attributionText}
           </div>
-        )}
-
-        <div
-          className="absolute bottom-2 right-4 text-xs text-neutral-400 select-none"
-          style={{ pointerEvents: "none" }}
-        >
-          {sticker.showAttribution && sticker.attributionText}
         </div>
 
         {/* 컨트롤 버튼들 (hover 시 표시) */}
@@ -239,6 +251,26 @@ export default function StickerAsset({
                   onChange={(e) =>
                     updateSticker(sticker.id, {
                       scale: parseFloat(e.target.value),
+                    })
+                  }
+                  className="w-full accent-white"
+                />
+              </div>
+
+              {/* 회전 슬라이더 */}
+              <div>
+                <label className="block text-xs text-neutral-400 mb-1">
+                  각도: {Math.round(sticker.rotate)}°
+                </label>
+                <input
+                  type="range"
+                  min="0"
+                  max="360"
+                  step="1"
+                  value={sticker.rotate}
+                  onChange={(e) =>
+                    updateSticker(sticker.id, {
+                      rotate: parseFloat(e.target.value),
                     })
                   }
                   className="w-full accent-white"

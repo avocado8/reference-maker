@@ -65,6 +65,7 @@ export interface StickerAssetType {
   scale: number; // 크기 배율 (0.1 ~ 3), scale=1 → max 200px
   x: number; // 캔버스 좌상단 기준 위치 (px)
   y: number;
+  rotate: number; // 회전 각도 (degree)
   showAttribution?: boolean; // 출처 표기 on/off
   attributionText?: string; // 출처 텍스트
 }

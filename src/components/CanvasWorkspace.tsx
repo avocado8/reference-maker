@@ -149,7 +149,7 @@ export default function CanvasWorkspace() {
                 <StickerLayer canvasScale={scale} />
 
                 <div
-                  className="absolute bottom-2 right-6 text-sm text-neutral-600 select-none"
+                  className="absolute bottom-2 right-6 text-sm text-neutral-400 select-none"
                   style={{ pointerEvents: "none" }}
                 >
                   @OL__SA

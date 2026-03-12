@@ -17,6 +17,10 @@ const defaultSettings: CanvasSettings = {
   borderRadius: 8,
   showShadow: true,
   textureDensity: 0,
+  backgroundType: "solid",
+  gradientColorStart: "#ffffff",
+  gradientColorEnd: "#e5e7eb",
+  gradientAngle: 180,
 };
 
 const CanvasSettingsContext = createContext<

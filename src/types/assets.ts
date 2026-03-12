@@ -30,6 +30,10 @@ export interface TextAssetType extends BaseAssetType {
   fontStyle?: "normal" | "italic";
   lineHeight?: number;
   letterSpacing?: number;
+  backgroundType?: "solid" | "gradient";
+  gradientColorStart?: string;
+  gradientColorEnd?: string;
+  gradientAngle?: number;
 }
 
 export interface ColorItem {

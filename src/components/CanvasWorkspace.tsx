@@ -104,44 +104,56 @@ export default function CanvasWorkspace() {
             height: dimensions.height * scale,
           }}
         >
-          {/* 실제 렌더링될 캔버스 영역 (고정 크기, 스케일로 축소 표시) */}
           <div
-            ref={canvasRef}
             style={{
               width: `${dimensions.width}px`,
               height: `${dimensions.height}px`,
-              backgroundColor: settings.backgroundColor,
-              color: "#000",
               transform: `scale(${scale})`,
               transformOrigin: "top left",
             }}
-            className="relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl"
           >
-            {" "}
-            {/* 배경 질감 레이어 */}
+            {/* 실제 렌더링될 캔버스 영역 (고정 크기, 스케일로 축소 표시) */}
             <div
-              className="absolute inset-0 pointer-events-none z-0"
+              ref={canvasRef}
               style={{
-                backgroundImage: "url('/textures/noise2.jpg')",
-                backgroundRepeat: "repeat",
-                backgroundSize: "1000px 1000px",
-                opacity: settings.textureDensity / 100,
+                width: `${dimensions.width}px`,
+                height: `${dimensions.height}px`,
+                background:
+                  settings.backgroundType === "gradient"
+                    ? `linear-gradient(${settings.gradientAngle ?? 180}deg, ${settings.gradientColorStart ?? "#ffffff"}, ${settings.gradientColorEnd ?? "#e5e7eb"})`
+                    : (settings.backgroundColor ?? "transparent"),
+                color: "#000",
+                // transform: `scale(${scale})`,
+                // transformOrigin: "top left",
               }}
-            />
-            {/* 실제 내용 */}
-            <div className="relative z-10 w-full h-full">
-              {settings.mode === "template" ? (
-                <TemplateModeCanvas />
-              ) : (
-                <FreeModeCanvas />
-              )}
-              <StickerLayer canvasScale={scale} />
-
+              className="relative overflow-hidden shrink-0 transition-all duration-300 shadow-2xl"
+            >
+              {" "}
+              {/* 배경 질감 레이어 */}
               <div
-                className="absolute bottom-2 right-6 text-sm text-neutral-600 select-none"
-                style={{ pointerEvents: "none" }}
-              >
-                @OL__SA
+                className="absolute inset-0 pointer-events-none z-0"
+                style={{
+                  backgroundImage: "url('/textures/noise2.jpg')",
+                  backgroundRepeat: "repeat",
+                  backgroundSize: "1000px 1000px",
+                  opacity: settings.textureDensity / 100,
+                }}
+              />
+              {/* 실제 내용 */}
+              <div className="relative z-10 w-full h-full">
+                {settings.mode === "template" ? (
+                  <TemplateModeCanvas />
+                ) : (
+                  <FreeModeCanvas />
+                )}
+                <StickerLayer canvasScale={scale} />
+
+                <div
+                  className="absolute bottom-2 right-6 text-sm text-neutral-600 select-none"
+                  style={{ pointerEvents: "none" }}
+                >
+                  @OL__SA
+                </div>
               </div>
             </div>
           </div>

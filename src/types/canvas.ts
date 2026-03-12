@@ -20,6 +20,10 @@ export interface CanvasSettings {
   borderRadius: number;
   showShadow: boolean;
   textureDensity: number;
+  backgroundType?: "solid" | "gradient";
+  gradientColorStart?: string;
+  gradientColorEnd?: string;
+  gradientAngle?: number;
 }
 
 export interface CanvasSettingsContextType {

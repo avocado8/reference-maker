@@ -203,16 +203,93 @@ function TextToolbar({ asset }: { asset: TextAssetType }) {
         </div>
 
         {/* 배경색 */}
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-neutral-400">배경색</span>
-          <input
-            type="color"
-            value={asset.backgroundColor ?? "#ffffff"}
-            onChange={(e) =>
-              updateAsset(asset.id, { backgroundColor: e.target.value })
-            }
-            className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
-          />
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-neutral-400">배경 방식</span>
+            <div className="flex gap-1">
+              {(
+                [
+                  { value: "solid", label: "단색" },
+                  { value: "gradient", label: "그라데이션" },
+                ] as const
+              ).map(({ value, label }) => (
+                <button
+                  key={value}
+                  onClick={() => updateAsset(asset.id, { backgroundType: value })}
+                  className={clsx(
+                    "text-[10px] px-2 py-0.5 rounded transition-colors",
+                    (asset.backgroundType ?? "solid") === value
+                      ? "bg-white text-neutral-800"
+                      : "text-white/70 bg-white/20 hover:bg-white/30",
+                  )}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {(asset.backgroundType ?? "solid") === "solid" ? (
+            <div className="flex items-center justify-between">
+              <span className="text-xs text-neutral-400 ml-2 border-l-2 border-neutral-600 pl-2">
+                배경색
+              </span>
+              <input
+                type="color"
+                value={asset.backgroundColor ?? "#ffffff"}
+                onChange={(e) =>
+                  updateAsset(asset.id, { backgroundColor: e.target.value })
+                }
+                className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
+              />
+            </div>
+          ) : (
+            <div className="space-y-2 ml-2 border-l-2 border-neutral-600 pl-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-neutral-400">시작색</span>
+                <input
+                  type="color"
+                  value={asset.gradientColorStart ?? "#ffffff"}
+                  onChange={(e) =>
+                    updateAsset(asset.id, { gradientColorStart: e.target.value })
+                  }
+                  className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-neutral-400">끝색</span>
+                <input
+                  type="color"
+                  value={asset.gradientColorEnd ?? "#e5e7eb"}
+                  onChange={(e) =>
+                    updateAsset(asset.id, { gradientColorEnd: e.target.value })
+                  }
+                  className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-neutral-400 w-6 shrink-0">
+                  각도
+                </span>
+                <input
+                  type="range"
+                  min="0"
+                  max="360"
+                  step="45"
+                  value={asset.gradientAngle ?? 180}
+                  onChange={(e) =>
+                    updateAsset(asset.id, {
+                      gradientAngle: Number(e.target.value),
+                    })
+                  }
+                  className="flex-1 accent-white"
+                />
+                <span className="text-xs text-neutral-400 w-10 text-right shrink-0">
+                  {asset.gradientAngle ?? 180}°
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* 폰트 */}
@@ -267,7 +344,12 @@ export default function TextAsset({ asset }: TextAssetProps) {
               ? "justify-end"
               : "justify-start",
         )}
-        style={{ backgroundColor: asset.backgroundColor ?? "transparent" }}
+        style={{
+          background:
+            asset.backgroundType === "gradient"
+              ? `linear-gradient(${asset.gradientAngle ?? 180}deg, ${asset.gradientColorStart ?? "#ffffff"}, ${asset.gradientColorEnd ?? "#e5e7eb"})`
+              : asset.backgroundColor ?? "transparent",
+        }}
         onClick={() => textareaRef.current?.focus()}
       >
         <textarea

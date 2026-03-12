@@ -71,7 +71,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
             {
               id: crypto.randomUUID(),
               color: "#3b82f6",
-              showCaption: false,
+              showCaption: true,
               caption: "Primary",
             },
           ],

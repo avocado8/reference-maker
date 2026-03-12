@@ -70,7 +70,7 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
     const newColor: ColorItem = {
       id: crypto.randomUUID(),
       color: "#000000",
-      showCaption: false,
+      showCaption: true,
       caption: "Color",
     };
     updateAsset(asset.id, { colors: [...asset.colors, newColor] });
@@ -108,7 +108,7 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
               <div className="relative">
                 <label
                   className={clsx(
-                    "block rounded-full border-4 border-white shadow-md transition-transform hover:scale-110 cursor-pointer overflow-hidden",
+                    "block rounded-xl border-2 border-white shadow-md transition-transform hover:scale-110 cursor-pointer overflow-hidden",
                     sizeClasses[asset.size],
                   )}
                   style={{ backgroundColor: colorItem.color }}
@@ -150,7 +150,7 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
             <button
               onClick={handleAddColor}
               className={clsx(
-                "flex items-center justify-center rounded-full border-2 border-dashed border-neutral-400 text-neutral-400 hover:border-neutral-500 hover:text-neutral-600 transition-all",
+                "flex items-center justify-center rounded-xl border-2 border-dashed border-neutral-400 text-neutral-400 hover:border-neutral-500 hover:text-neutral-600 transition-all",
                 sizeClasses[asset.size],
               )}
             >

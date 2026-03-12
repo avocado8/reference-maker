@@ -81,7 +81,7 @@ export default function Sidebar({ className }: SidebarProps) {
               <h3 className="text-sm font-semibold text-neutral-300 mb-3 flex items-center gap-2">
                 <LayoutTemplate size={16} /> 캔버스 모드
               </h3>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 <button
                   onClick={() => handleModeChange("template")}
                   className={clsx(
@@ -94,7 +94,7 @@ export default function Sidebar({ className }: SidebarProps) {
                   <LayoutTemplate size={20} />
                   템플릿 사용
                 </button>
-                <button
+                {/* <button
                   onClick={() => handleModeChange("free")}
                   className={clsx(
                     "p-3 rounded-lg border text-sm flex flex-col items-center gap-2 transition-all",
@@ -105,7 +105,7 @@ export default function Sidebar({ className }: SidebarProps) {
                 >
                   <Move size={20} />
                   자유 배치
-                </button>
+                </button> */}
               </div>
             </section>
 
@@ -192,22 +192,108 @@ export default function Sidebar({ className }: SidebarProps) {
                 </div>
 
                 <div>
-                  <label className="block text-xs text-neutral-400 mb-1">
-                    배경색
+                  <label className="block text-xs text-neutral-400 mb-2">
+                    배경 설정
                   </label>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="color"
-                      value={settings.backgroundColor}
-                      onChange={(e) =>
-                        updateSettings({ backgroundColor: e.target.value })
-                      }
-                      className="w-10 h-10 rounded border-0 bg-transparent cursor-pointer"
-                    />
-                    <span className="text-sm uppercase">
-                      {settings.backgroundColor}
-                    </span>
+                  <div className="flex gap-2 mb-4 bg-neutral-800 p-1 rounded-md">
+                    {(
+                      [
+                        { value: "solid", label: "단색" },
+                        { value: "gradient", label: "그라데이션" },
+                      ] as const
+                    ).map(({ value, label }) => (
+                      <button
+                        key={value}
+                        onClick={() =>
+                          updateSettings({ backgroundType: value })
+                        }
+                        className={clsx(
+                          "flex-1 py-1 text-[10px] font-medium rounded transition-colors",
+                          (settings.backgroundType ?? "solid") === value
+                            ? "bg-neutral-600 text-white shadow"
+                            : "text-neutral-400 hover:text-white",
+                        )}
+                      >
+                        {label}
+                      </button>
+                    ))}
                   </div>
+
+                  {(settings.backgroundType ?? "solid") === "solid" ? (
+                    <div className="flex items-center gap-3 bg-neutral-800/50 p-2 rounded-lg border border-neutral-700">
+                      <input
+                        type="color"
+                        value={settings.backgroundColor}
+                        onChange={(e) =>
+                          updateSettings({ backgroundColor: e.target.value })
+                        }
+                        className="w-10 h-10 rounded border-0 bg-transparent cursor-pointer"
+                      />
+                      <span className="text-sm uppercase text-neutral-300 font-mono">
+                        {settings.backgroundColor}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 bg-neutral-800/50 p-3 rounded-lg border border-neutral-700">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-neutral-400">시작색</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={settings.gradientColorStart ?? "#ffffff"}
+                            onChange={(e) =>
+                              updateSettings({
+                                gradientColorStart: e.target.value,
+                              })
+                            }
+                            className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                          />
+                          <span className="text-xs font-mono uppercase text-neutral-400">
+                            {settings.gradientColorStart}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-neutral-400">끝색</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={settings.gradientColorEnd ?? "#e5e7eb"}
+                            onChange={(e) =>
+                              updateSettings({
+                                gradientColorEnd: e.target.value,
+                              })
+                            }
+                            className="w-8 h-8 rounded border-0 bg-transparent cursor-pointer"
+                          />
+                          <span className="text-xs font-mono uppercase text-neutral-400">
+                            {settings.gradientColorEnd}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex justify-between">
+                          <span className="text-xs text-neutral-400">각도</span>
+                          <span className="text-xs text-neutral-300">
+                            {settings.gradientAngle ?? 180}°
+                          </span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="360"
+                          step="45"
+                          value={settings.gradientAngle ?? 180}
+                          onChange={(e) =>
+                            updateSettings({
+                              gradientAngle: Number(e.target.value),
+                            })
+                          }
+                          className="w-full accent-white"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <div>

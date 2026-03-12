@@ -32,7 +32,7 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
               <input
                 type="range"
                 min="0.1"
-                max="5"
+                max="10"
                 step="0.1"
                 value={asset.scale}
                 onChange={(e) =>

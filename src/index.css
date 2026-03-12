@@ -24,11 +24,38 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "BMDohyeon";
+  src: url("/fonts/BMDOHYEON.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SCDream";
+  src: url("/fonts/SCDream4.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "MsMadi";
+  src: url("/fonts/MsMadi-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   --font-sans: "system-ui", "Avenir", "Helvetica", "Arial", sans-serif;
   --font-dotum: "Pretendard", "Dotum", "Apple SD Gothic Neo", sans-serif;
   --font-batang: "KopubWorldBatang", "Batang", "AppleMyungjo", serif;
   --font-handwrite: "Handwrite", "Batang", "AppleMyungjo", serif;
+  --font-bmdohyeon: "BMDohyeon", "Dotum", "Apple SD Gothic Neo", sans-serif;
+  --font-scdream: "SCDream", "Dotum", "Apple SD Gothic Neo", sans-serif;
+  --font-msmadi: "MsMadi", "Dotum", "Apple SD Gothic Neo", sans-serif;
 }
 
 @layer base {

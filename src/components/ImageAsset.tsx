@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { useAssets } from "../store/AssetContext";
 import type { ImageAssetType } from "../types/assets";
 import AssetWrapper from "./AssetWrapper";
+import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 
 interface ImageAssetProps {
   asset: ImageAssetType;
@@ -55,6 +56,16 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
             </>
           )}
         </div>
+
+        {/* 배경색 */}
+        <BackgroundControl
+          backgroundType={asset.backgroundType}
+          backgroundColor={asset.backgroundColor}
+          gradientColorStart={asset.gradientColorStart}
+          gradientColorEnd={asset.gradientColorEnd}
+          gradientAngle={asset.gradientAngle}
+          onChange={(updates) => updateAsset(asset.id, updates)}
+        />
 
         {/* 출처 표기 on/off */}
         <div className="flex items-center justify-between">
@@ -138,7 +149,10 @@ export default function ImageAsset({ asset }: ImageAssetProps) {
 
   return (
     <AssetWrapper assetId={asset.id} toolbar={<ImageToolbar asset={asset} />}>
-      <div className="w-full h-full relative select-none">
+      <div
+        className="w-full h-full relative select-none"
+        style={{ background: getBackgroundStyle(asset) }}
+      >
         <div
           className="w-full h-full flex items-center justify-center"
           style={{

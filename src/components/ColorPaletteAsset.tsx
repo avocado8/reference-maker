@@ -3,6 +3,7 @@ import { type PaletteAssetType, type ColorItem } from "../types/assets";
 import { Plus, Trash2 } from "lucide-react";
 import clsx from "clsx";
 import AssetWrapper from "./AssetWrapper";
+import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 
 function PaletteToolbar({ asset }: { asset: PaletteAssetType }) {
   const { updateAsset } = useAssets();
@@ -34,6 +35,16 @@ function PaletteToolbar({ asset }: { asset: PaletteAssetType }) {
             ))}
           </div>
         </div>
+
+        {/* 배경색 */}
+        <BackgroundControl
+          backgroundType={asset.backgroundType}
+          backgroundColor={asset.backgroundColor}
+          gradientColorStart={asset.gradientColorStart}
+          gradientColorEnd={asset.gradientColorEnd}
+          gradientAngle={asset.gradientAngle}
+          onChange={(updates) => updateAsset(asset.id, updates)}
+        />
 
         {/* 추가 버튼 표시 여부 */}
         <div className="flex items-center justify-between">
@@ -71,7 +82,7 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
       id: crypto.randomUUID(),
       color: "#000000",
       showCaption: true,
-      caption: "Color",
+      caption: "Eye",
     };
     updateAsset(asset.id, { colors: [...asset.colors, newColor] });
   };
@@ -98,12 +109,15 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
 
   return (
     <AssetWrapper assetId={asset.id} toolbar={<PaletteToolbar asset={asset} />}>
-      <div className="w-full h-full p-4 flex items-center justify-center backdrop-blur">
-        <div className="flex flex-wrap justify-center gap-1 py-5">
+      <div
+        className="w-full h-full p-4 flex items-center justify-center backdrop-blur"
+        style={{ background: getBackgroundStyle(asset) }}
+      >
+        <div className="flex flex-wrap gap-1 justify-center py-5">
           {asset.colors.map((colorItem) => (
             <div
               key={colorItem.id}
-              className="flex flex-col items-center gap-2 group/color relative"
+              className="flex flex-col items-center gap-0.5 group/color relative"
             >
               <div className="relative">
                 <label
@@ -138,7 +152,7 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
                   onChange={(e) =>
                     handleUpdateColor(colorItem.id, { caption: e.target.value })
                   }
-                  className="text-xs font-bold text-center bg-transparent border-none outline-none w-16"
+                  className="text-xs font-dotum text-center bg-transparent border-none outline-none w-10"
                   placeholder="Name"
                 />
               )}

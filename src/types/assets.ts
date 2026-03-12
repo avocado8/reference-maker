@@ -5,7 +5,15 @@ export interface BaseAssetType {
   type: AssetType;
 }
 
-export interface ImageAssetType extends BaseAssetType {
+export interface BackgroundFields {
+  backgroundType?: "solid" | "gradient" | "transparent";
+  backgroundColor?: string;
+  gradientColorStart?: string;
+  gradientColorEnd?: string;
+  gradientAngle?: number;
+}
+
+export interface ImageAssetType extends BaseAssetType, BackgroundFields {
   type: "image";
   url: string;
   scale: number; // 확대/축소 비율
@@ -15,14 +23,14 @@ export interface ImageAssetType extends BaseAssetType {
   attributionText?: string; // 출처 텍스트
 }
 
-export type FontFamily = "sans" | "dotum" | "batang" | "handwrite";
+import type { FontFamily } from "../config/consts";
+export type { FontFamily };
 
-export interface TextAssetType extends BaseAssetType {
+export interface TextAssetType extends BaseAssetType, BackgroundFields {
   type: "text";
   content: string;
   color?: string; // 텍스트 색상 (CSS color)
   fontSize?: number; // 폰트 크기 override (px)
-  backgroundColor?: string; // 배경 색상 (CSS color)
   textAlign?: "left" | "center" | "right";
   verticalAlign?: "top" | "middle" | "bottom";
   fontFamily?: FontFamily;
@@ -30,10 +38,6 @@ export interface TextAssetType extends BaseAssetType {
   fontStyle?: "normal" | "italic";
   lineHeight?: number;
   letterSpacing?: number;
-  backgroundType?: "solid" | "gradient";
-  gradientColorStart?: string;
-  gradientColorEnd?: string;
-  gradientAngle?: number;
 }
 
 export interface ColorItem {
@@ -47,7 +51,7 @@ export interface PaletteSize {
   size: "S" | "M" | "L";
 }
 
-export interface PaletteAssetType extends BaseAssetType {
+export interface PaletteAssetType extends BaseAssetType, BackgroundFields {
   type: "palette";
   colors: ColorItem[];
   size: PaletteSize["size"];

@@ -1,5 +1,6 @@
 import { useAssets } from "../store/AssetContext";
 import { type TextAssetType } from "../types/assets";
+import { FONT_CONFIG, type FontFamily } from "../config/consts";
 import {
   AlignLeft,
   AlignCenter,
@@ -10,6 +11,8 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import AssetWrapper from "./AssetWrapper";
+import SliderControl from "./SliderControl";
+import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 import { useEffect, useRef } from "react";
 
 const DEFAULT_FONT_SIZE = 16;
@@ -36,61 +39,37 @@ function TextToolbar({ asset }: { asset: TextAssetType }) {
         </div>
 
         {/* 크기 */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-400 w-6 shrink-0">크기</span>
-          <input
-            type="range"
-            min="10"
-            max="120"
-            step="1"
-            value={currentSize}
-            onChange={(e) =>
-              updateAsset(asset.id, { fontSize: Number(e.target.value) })
-            }
-            className="flex-1 accent-white"
-          />
-          <span className="text-xs text-neutral-400 w-10 text-right shrink-0">
-            {currentSize}px
-          </span>
-        </div>
+        <SliderControl
+          label="크기"
+          value={currentSize}
+          min={10}
+          max={100}
+          step={1}
+          unit="px"
+          onChange={(val) => updateAsset(asset.id, { fontSize: val })}
+        />
 
         {/* 자간 */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-400 w-6 shrink-0">자간</span>
-          <input
-            type="range"
-            min="-6"
-            max="10"
-            step="1"
-            value={asset.letterSpacing ?? 0}
-            onChange={(e) =>
-              updateAsset(asset.id, { letterSpacing: Number(e.target.value) })
-            }
-            className="flex-1 accent-white"
-          />
-          <span className="text-xs text-neutral-400 w-10 text-right shrink-0">
-            {asset.letterSpacing ?? 0}px
-          </span>
-        </div>
+        <SliderControl
+          label="자간"
+          value={asset.letterSpacing ?? 0}
+          min={-6}
+          max={10}
+          step={1}
+          unit="px"
+          onChange={(val) => updateAsset(asset.id, { letterSpacing: val })}
+        />
 
         {/* 행간 */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-neutral-400 w-6 shrink-0">행간</span>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            step="1"
-            value={asset.lineHeight ?? 0}
-            onChange={(e) =>
-              updateAsset(asset.id, { lineHeight: Number(e.target.value) })
-            }
-            className="flex-1 accent-white"
-          />
-          <span className="text-xs text-neutral-400 w-10 text-right shrink-0">
-            {asset.lineHeight ?? 0}px
-          </span>
-        </div>
+        <SliderControl
+          label="행간"
+          value={asset.lineHeight ?? 0}
+          min={0}
+          max={100}
+          step={1}
+          unit="px"
+          onChange={(val) => updateAsset(asset.id, { lineHeight: val })}
+        />
 
         {/* 수평 정렬 */}
         <div className="flex items-center justify-between">
@@ -203,109 +182,28 @@ function TextToolbar({ asset }: { asset: TextAssetType }) {
         </div>
 
         {/* 배경색 */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-neutral-400">배경 방식</span>
-            <div className="flex gap-1">
-              {(
-                [
-                  { value: "solid", label: "단색" },
-                  { value: "gradient", label: "그라데이션" },
-                ] as const
-              ).map(({ value, label }) => (
-                <button
-                  key={value}
-                  onClick={() => updateAsset(asset.id, { backgroundType: value })}
-                  className={clsx(
-                    "text-[10px] px-2 py-0.5 rounded transition-colors",
-                    (asset.backgroundType ?? "solid") === value
-                      ? "bg-white text-neutral-800"
-                      : "text-white/70 bg-white/20 hover:bg-white/30",
-                  )}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </div>
+        <BackgroundControl
+          backgroundType={asset.backgroundType}
+          backgroundColor={asset.backgroundColor}
+          gradientColorStart={asset.gradientColorStart}
+          gradientColorEnd={asset.gradientColorEnd}
+          gradientAngle={asset.gradientAngle}
+          onChange={(updates) => updateAsset(asset.id, updates)}
+        />
 
-          {(asset.backgroundType ?? "solid") === "solid" ? (
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-neutral-400 ml-2 border-l-2 border-neutral-600 pl-2">
-                배경색
-              </span>
-              <input
-                type="color"
-                value={asset.backgroundColor ?? "#ffffff"}
-                onChange={(e) =>
-                  updateAsset(asset.id, { backgroundColor: e.target.value })
-                }
-                className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
-              />
-            </div>
-          ) : (
-            <div className="space-y-2 ml-2 border-l-2 border-neutral-600 pl-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-neutral-400">시작색</span>
-                <input
-                  type="color"
-                  value={asset.gradientColorStart ?? "#ffffff"}
-                  onChange={(e) =>
-                    updateAsset(asset.id, { gradientColorStart: e.target.value })
-                  }
-                  className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-xs text-neutral-400">끝색</span>
-                <input
-                  type="color"
-                  value={asset.gradientColorEnd ?? "#e5e7eb"}
-                  onChange={(e) =>
-                    updateAsset(asset.id, { gradientColorEnd: e.target.value })
-                  }
-                  className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
-                />
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-neutral-400 w-6 shrink-0">
-                  각도
-                </span>
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  step="45"
-                  value={asset.gradientAngle ?? 180}
-                  onChange={(e) =>
-                    updateAsset(asset.id, {
-                      gradientAngle: Number(e.target.value),
-                    })
-                  }
-                  className="flex-1 accent-white"
-                />
-                <span className="text-xs text-neutral-400 w-10 text-right shrink-0">
-                  {asset.gradientAngle ?? 180}°
-                </span>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* 폰트 */}
+        {/* 글꼴 */}
         <div className="flex items-center justify-between">
-          <span className="text-xs text-neutral-400">폰트</span>
+          <span className="text-xs text-neutral-400">글꼴</span>
           <select
             value={asset.fontFamily ?? "sans"}
             onChange={(e) =>
-              updateAsset(asset.id, { fontFamily: e.target.value as any })
+              updateAsset(asset.id, { fontFamily: e.target.value as FontFamily })
             }
             className="w-32 bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs text-white outline-none focus:border-blue-500"
           >
-            <option value="sans">기본 고딕</option>
-            <option value="dotum">Pretendard</option>
-            <option value="batang">KoPub Batang</option>
-            <option value="handwrite">손글씨</option>
+            {Object.entries(FONT_CONFIG).map(([key, config]) => (
+              <option key={key} value={key}>{config.label}</option>
+            ))}
           </select>
         </div>
       </div>
@@ -336,6 +234,7 @@ export default function TextAsset({ asset }: TextAssetProps) {
   return (
     <AssetWrapper assetId={asset.id} toolbar={<TextToolbar asset={asset} />}>
       <div
+        data-transparent-bg={asset.backgroundType === "transparent"}
         className={clsx(
           "w-full h-full p-2 transition-colors duration-200 flex flex-col overflow-hidden min-h-0 cursor-text",
           verticalAlign === "middle"
@@ -344,12 +243,7 @@ export default function TextAsset({ asset }: TextAssetProps) {
               ? "justify-end"
               : "justify-start",
         )}
-        style={{
-          background:
-            asset.backgroundType === "gradient"
-              ? `linear-gradient(${asset.gradientAngle ?? 180}deg, ${asset.gradientColorStart ?? "#ffffff"}, ${asset.gradientColorEnd ?? "#e5e7eb"})`
-              : asset.backgroundColor ?? "transparent",
-        }}
+        style={{ background: getBackgroundStyle(asset) }}
         onClick={() => textareaRef.current?.focus()}
       >
         <textarea
@@ -373,13 +267,7 @@ export default function TextAsset({ asset }: TextAssetProps) {
           }}
           className={clsx(
             "w-full bg-transparent border-none outline-none resize-none overflow-hidden placeholder:text-neutral-400 shrink-0",
-            asset.fontFamily === "dotum"
-              ? "font-dotum"
-              : asset.fontFamily === "batang"
-                ? "font-batang"
-                : asset.fontFamily === "handwrite"
-                  ? "font-handwrite"
-                  : "font-sans",
+            FONT_CONFIG[asset.fontFamily ?? "sans"].className,
           )}
         />
       </div>

@@ -91,7 +91,7 @@ export default function Sidebar({ className }: SidebarProps) {
                   )}
                 >
                   <LayoutTemplate size={20} />
-                  템플릿 사용
+                  템플릿 모드
                 </button>
                 {/* <button
                   onClick={() => handleModeChange("free")}

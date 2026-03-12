@@ -40,7 +40,11 @@ interface ActiveStyles {
 function matchFontFamily(computed: string): FontFamily {
   const norm = computed.toLowerCase().replace(/["']/g, "");
   for (const [key, config] of Object.entries(FONT_CONFIG)) {
-    const first = config.cssFamily.split(",")[0].trim().replace(/["']/g, "").toLowerCase();
+    const first = config.cssFamily
+      .split(",")[0]
+      .trim()
+      .replace(/["']/g, "")
+      .toLowerCase();
     if (norm.startsWith(first) || norm.includes(first)) {
       return key as FontFamily;
     }
@@ -85,6 +89,29 @@ function TextToolbar({
         텍스트
       </p>
       <div className="flex flex-col gap-3 p-4">
+        {/* 글꼴 */}
+        <div className="flex items-center justify-between">
+          <span className="text-xs text-neutral-400">글꼴</span>
+          <select
+            value={activeStyles.fontFamily}
+            onMouseDown={onSaveSelection}
+            onChange={(e) => {
+              const key = e.target.value as FontFamily;
+              applyOrUpdate(
+                { fontFamily: FONT_CONFIG[key].cssFamily },
+                { fontFamily: key },
+              );
+            }}
+            className="w-32 bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs text-white outline-none focus:border-blue-500"
+          >
+            {Object.entries(FONT_CONFIG).map(([key, config]) => (
+              <option key={key} value={key}>
+                {config.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* 글씨 색 — 커서 위치 색상 반영 */}
         <div className="flex items-center justify-between">
           <span className="text-xs text-neutral-400">글씨 색</span>
@@ -93,7 +120,10 @@ function TextToolbar({
             value={activeStyles.color}
             onMouseDown={onSaveSelection}
             onChange={(e) =>
-              applyOrUpdate({ color: e.target.value }, { color: e.target.value })
+              applyOrUpdate(
+                { color: e.target.value },
+                { color: e.target.value },
+              )
             }
             className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
           />
@@ -217,7 +247,7 @@ function TextToolbar({
 
         {/* 굵기/스타일 — 커서 위치 상태 반영 */}
         <div className="flex items-center justify-between">
-          <span className="text-xs text-neutral-400">굵기</span>
+          <span className="text-xs text-neutral-400">스타일</span>
           <div className="flex gap-1">
             {(
               [
@@ -274,29 +304,6 @@ function TextToolbar({
           gradientAngle={asset.gradientAngle}
           onChange={(updates) => updateAsset(asset.id, updates)}
         />
-
-        {/* 글꼴 */}
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-neutral-400">글꼴</span>
-          <select
-            value={activeStyles.fontFamily}
-            onMouseDown={onSaveSelection}
-            onChange={(e) => {
-              const key = e.target.value as FontFamily;
-              applyOrUpdate(
-                { fontFamily: FONT_CONFIG[key].cssFamily },
-                { fontFamily: key },
-              );
-            }}
-            className="w-32 bg-neutral-700 border border-neutral-600 rounded px-2 py-1 text-xs text-white outline-none focus:border-blue-500"
-          >
-            {Object.entries(FONT_CONFIG).map(([key, config]) => (
-              <option key={key} value={key}>
-                {config.label}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
     </div>
   );
@@ -321,7 +328,7 @@ export default function TextAsset({ asset }: TextAssetProps) {
     fontStyle: asset.fontStyle ?? "normal",
     color: asset.color ?? "#000000",
     fontSize: asset.fontSize ?? DEFAULT_FONT_SIZE,
-    fontFamily: asset.fontFamily ?? "sans",
+    fontFamily: asset.fontFamily ?? "dotum",
   });
 
   // 마운트 시 초기 HTML 설정 (이후에는 onInput으로만 DOM 관리)
@@ -351,14 +358,17 @@ export default function TextAsset({ asset }: TextAssetProps) {
       setActiveStyles({
         fontWeight: parseInt(s.fontWeight) >= 600 ? "bold" : "normal",
         fontStyle: s.fontStyle === "italic" ? "italic" : "normal",
-        color: s.color.startsWith("rgb") ? rgbToHex(s.color) : (s.color || "#000000"),
+        color: s.color.startsWith("rgb")
+          ? rgbToHex(s.color)
+          : s.color || "#000000",
         fontSize: parseInt(s.fontSize) || DEFAULT_FONT_SIZE,
         fontFamily: matchFontFamily(s.fontFamily),
       });
     };
 
     document.addEventListener("selectionchange", onSelectionChange);
-    return () => document.removeEventListener("selectionchange", onSelectionChange);
+    return () =>
+      document.removeEventListener("selectionchange", onSelectionChange);
   }, []);
 
   // asset-level 스타일 변경 시 activeStyles 동기화 (에디터에 포커스 없을 때)
@@ -371,7 +381,13 @@ export default function TextAsset({ asset }: TextAssetProps) {
       fontSize: asset.fontSize ?? prev.fontSize,
       fontFamily: asset.fontFamily ?? prev.fontFamily,
     }));
-  }, [asset.fontWeight, asset.fontStyle, asset.color, asset.fontSize, asset.fontFamily]);
+  }, [
+    asset.fontWeight,
+    asset.fontStyle,
+    asset.color,
+    asset.fontSize,
+    asset.fontFamily,
+  ]);
 
   const handleInput = useCallback(() => {
     if (!editorRef.current) return;
@@ -553,7 +569,7 @@ export default function TextAsset({ asset }: TextAssetProps) {
             }}
             className={clsx(
               "w-full bg-transparent",
-              FONT_CONFIG[asset.fontFamily ?? "sans"].className,
+              FONT_CONFIG[asset.fontFamily ?? "dotum"].className,
             )}
           />
         </div>

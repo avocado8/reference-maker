@@ -67,7 +67,7 @@ export default function SliderControl({
         }}
         className="flex-1 accent-white text-xs"
       />
-      <div className="flex items-center justify-end w-12 shrink-0">
+      <div className="flex items-center justify-end w-10 shrink-0">
         <input
           type="text"
           value={inputValue}

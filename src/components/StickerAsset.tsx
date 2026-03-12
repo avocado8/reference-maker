@@ -4,6 +4,7 @@ import { Upload, X, Settings } from "lucide-react";
 import { useAssets } from "../store/AssetContext";
 import type { StickerAssetType } from "../types/assets";
 import clsx from "clsx";
+import SliderControl from "./SliderControl";
 
 interface StickerAssetProps {
   sticker: StickerAssetType;
@@ -163,7 +164,7 @@ export default function StickerAsset({
 
           {/* 출처 텍스트: 회전된 이미지의 우측 하단에 고정 */}
           <div
-            className="absolute bottom-2 right-4 text-xs text-neutral-400 select-none"
+            className="w-full text-xs flex mt-1 justify-center text-neutral-400 select-none"
             style={{ pointerEvents: "none" }}
           >
             {sticker.showAttribution && sticker.attributionText}
@@ -239,41 +240,29 @@ export default function StickerAsset({
 
               {/* 크기 슬라이더 */}
               <div>
-                <label className="block text-xs text-neutral-400 mb-1">
-                  크기: {Math.round(sticker.scale * 100)}%
-                </label>
-                <input
-                  type="range"
-                  min="0.2"
-                  max="5"
-                  step="0.1"
+                <SliderControl
                   value={sticker.scale}
-                  onChange={(e) =>
-                    updateSticker(sticker.id, {
-                      scale: parseFloat(e.target.value),
-                    })
+                  onChange={(value) =>
+                    updateSticker(sticker.id, { scale: value })
                   }
-                  className="w-full accent-white"
+                  min={0.2}
+                  max={5}
+                  step={0.1}
+                  label="크기"
                 />
               </div>
 
               {/* 회전 슬라이더 */}
               <div>
-                <label className="block text-xs text-neutral-400 mb-1">
-                  각도: {Math.round(sticker.rotate)}°
-                </label>
-                <input
-                  type="range"
-                  min="0"
-                  max="360"
-                  step="1"
+                <SliderControl
                   value={sticker.rotate}
-                  onChange={(e) =>
-                    updateSticker(sticker.id, {
-                      rotate: parseFloat(e.target.value),
-                    })
+                  onChange={(value) =>
+                    updateSticker(sticker.id, { rotate: value })
                   }
-                  className="w-full accent-white"
+                  min={0}
+                  max={360}
+                  step={1}
+                  label="각도"
                 />
               </div>
 

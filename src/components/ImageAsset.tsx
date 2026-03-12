@@ -5,6 +5,7 @@ import { useAssets } from "../store/AssetContext";
 import type { ImageAssetType } from "../types/assets";
 import AssetWrapper from "./AssetWrapper";
 import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
+import SliderControl from "./SliderControl";
 
 interface ImageAssetProps {
   asset: ImageAssetType;
@@ -30,21 +31,14 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
           </button>
           {asset.url && (
             <>
-              <input
-                type="range"
-                min="0.1"
-                max="10"
-                step="0.1"
+              <SliderControl
                 value={asset.scale}
-                onChange={(e) =>
-                  updateAsset(asset.id, { scale: parseFloat(e.target.value) })
-                }
-                className="flex-1 accent-white"
-                title={`크기: ${Math.round(asset.scale * 100)}%`}
+                onChange={(value) => updateAsset(asset.id, { scale: value })}
+                min={0.1}
+                max={10}
+                step={0.1}
+                label="크기"
               />
-              <span className="text-xs text-neutral-400 w-8 text-right shrink-0">
-                {Math.round(asset.scale * 100)}%
-              </span>
               <button
                 onClick={() =>
                   updateAsset(asset.id, { panX: 0, panY: 0, scale: 1 })

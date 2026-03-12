@@ -24,6 +24,8 @@ export interface CanvasSettings {
   backgroundType?: "solid" | "gradient" | "image";
   backgroundImage?: string;
   backgroundImageScale?: number;
+  backgroundImagePanX?: number;
+  backgroundImagePanY?: number;
   enableBlurredBackground?: boolean;
   gradientColorStart?: string;
   gradientColorEnd?: string;

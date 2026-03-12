@@ -354,6 +354,31 @@ export default function Sidebar({ className }: SidebarProps) {
                         )}
 
                         {settings.backgroundImage && (
+                          <div className="space-y-2 pt-2">
+                            <SliderControl
+                              label="좌우 위치"
+                              value={settings.backgroundImagePanX ?? 50}
+                              onChange={(val) =>
+                                updateSettings({ backgroundImagePanX: val })
+                              }
+                              min={0}
+                              max={100}
+                              step={1}
+                            />
+                            <SliderControl
+                              label="상하 위치"
+                              value={settings.backgroundImagePanY ?? 50}
+                              onChange={(val) =>
+                                updateSettings({ backgroundImagePanY: val })
+                              }
+                              min={0}
+                              max={100}
+                              step={1}
+                            />
+                          </div>
+                        )}
+
+                        {settings.backgroundImage && (
                           <div className="flex items-center justify-between pt-2">
                             <span className="text-xs text-neutral-400">
                               배경 흐림 효과

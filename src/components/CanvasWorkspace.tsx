@@ -168,7 +168,7 @@ export default function CanvasWorkspace() {
                         style={{
                           backgroundImage: `url(${settings.backgroundImage})`,
                           backgroundSize: `${settings.backgroundImageScale ?? 100}%`,
-                          backgroundPosition: "center",
+                          backgroundPosition: `${settings.backgroundImagePanX ?? 50}% ${settings.backgroundImagePanY ?? 50}%`,
                           backgroundRepeat: "no-repeat",
                         }}
                       />

@@ -25,6 +25,8 @@ const defaultSettings: CanvasSettings = {
   multiCount: 4,
   backgroundImage: "",
   backgroundImageScale: 100,
+  backgroundImagePanX: 50,
+  backgroundImagePanY: 50,
   enableBlurredBackground: false,
 };
 

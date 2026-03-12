@@ -5,7 +5,6 @@ import {
   Settings,
   Image as ImageIcon,
   LayoutTemplate,
-  Move,
   Text,
   Palette,
   Pencil,
@@ -337,6 +336,10 @@ export default function Sidebar({ className }: SidebarProps) {
                     <br />
                     영역 하단의 설정 버튼으로 사진 크기, 글씨 색 등을 변경할 수
                     있습니다.
+                    <br />
+                    <br />
+                    업로드한 자료는 로컬 브라우저에서만 사용되며 저장되지
+                    않습니다.
                   </p>
                   <p className="mt-2 text-neutral-400 text-xs">
                     자료를 추가하면 우상단에 × 버튼이 나타나 삭제할 수 있습니다.

@@ -1,7 +1,9 @@
 import CanvasWorkspace from "./CanvasWorkspace";
 import Sidebar from "./Sidebar";
+import { useBeforeUnload } from "../hooks/useBeforeUnload";
 
 export default function Layout() {
+  useBeforeUnload();
   return (
     <div className="flex h-screen w-full bg-neutral-900 text-neutral-100 overflow-hidden">
       {/* 고정 사이드바 메뉴 넓이: w-80 (320px) */}

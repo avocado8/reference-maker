@@ -82,8 +82,7 @@ export default function CanvasWorkspace() {
             {settings.mode === "template" ? "템플릿 모드" : "자유 배치 모드"}
           </p>
           <p className="text-sm text-neutral-400">
-            새로고침 시 작업 내역이 초기화됩니다. 업로드한 자료는 로컬
-            브라우저에서만 사용되며 저장되지 않습니다.
+            새로고침 시 작업 내역이 초기화됩니다.
           </p>
         </div>
         <button

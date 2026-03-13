@@ -168,8 +168,8 @@ export default function StickerAsset({
           position: "absolute",
           left: sticker.x,
           top: sticker.y,
-          width: sticker.stickerType === "image" ? displaySize : "auto",
-          height: sticker.stickerType === "image" ? displaySize : "auto",
+          width: sticker.stickerType === "image" ? displaySize : "max-content",
+          height: sticker.stickerType === "image" ? displaySize : "max-content",
           cursor: isDragging ? "grabbing" : "grab",
           userSelect: "none",
         }}

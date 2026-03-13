@@ -1,4 +1,4 @@
-export type AssetType = "image" | "text" | "palette";
+export type AssetType = "image" | "text" | "palette" | "sticker";
 
 export interface BaseAssetType {
   id: string;
@@ -58,17 +58,40 @@ export interface PaletteAssetType extends BaseAssetType, BackgroundFields {
   showAddButton?: boolean; // 컬러 추가 버튼 표시 여부 (기본값: true)
 }
 
-// 스티커 (투명 배경 이미지, 캔버스 위 자유 배치)
-export interface StickerAssetType {
-  id: string;
-  url: string;
-  scale: number; // 크기 배율 (0.1 ~ 3), scale=1 → max 200px
+// 스티커 (공통 속성)
+export interface BaseStickerAssetType extends BaseAssetType {
+  type: "sticker";
+  scale: number; // 크기 배율 (0.1 ~ 5)
   x: number; // 캔버스 좌상단 기준 위치 (px)
   y: number;
   rotate: number; // 회전 각도 (degree)
+}
+
+export interface ImageStickerAssetType extends BaseStickerAssetType {
+  stickerType: "image";
+  url: string;
   showAttribution?: boolean; // 출처 표기 on/off
   attributionText?: string; // 출처 텍스트
 }
+
+export interface TextStickerAssetType
+  extends BaseStickerAssetType,
+    BackgroundFields {
+  stickerType: "text";
+  content: string;
+  color?: string; // 텍스트 색상 (CSS color)
+  fontSize?: number; // 폰트 크기 override (px)
+  textAlign?: "left" | "center" | "right";
+  verticalAlign?: "top" | "middle" | "bottom";
+  fontFamily?: FontFamily;
+  fontWeight?: "normal" | "bold";
+  fontStyle?: "normal" | "italic";
+  lineHeight?: number;
+  letterSpacing?: number;
+  tailDirection?: "none" | "top" | "bottom" | "left" | "right"; // 말풍선 꼬리 방향
+}
+
+export type StickerAssetType = ImageStickerAssetType | TextStickerAssetType;
 
 // 자유 배치 모드용 에셋 (위치 및 크기 정보 포함)
 export interface FreeAssetType {

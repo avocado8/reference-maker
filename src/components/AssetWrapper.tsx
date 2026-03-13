@@ -1,8 +1,8 @@
-import { createPortal } from "react-dom";
-import { useRef, useState, useEffect, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { X, Settings } from "lucide-react";
 import clsx from "clsx";
 import { useAssets } from "../store/AssetContext";
+import DraggablePopover from "./DraggablePopover";
 
 interface AssetWrapperProps {
   assetId: string;
@@ -26,7 +26,6 @@ export default function AssetWrapper({
   const [isOpen, setIsOpen] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
   const [popoverStyle, setPopoverStyle] = useState<React.CSSProperties>({});
 
   const openPopover = () => {
@@ -47,51 +46,6 @@ export default function AssetWrapper({
 
     setPopoverStyle({ left, top, minWidth: popoverWidth });
     setIsOpen(true);
-  };
-
-  useEffect(() => {
-    if (!isOpen) return;
-    const handleClose = (e: MouseEvent) => {
-      if (
-        !popoverRef.current?.contains(e.target as Node) &&
-        !barRef.current?.contains(e.target as Node) &&
-        // 에셋 내부 클릭 시 툴바 닫히지 않음
-        !wrapperRef.current?.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    const handleScroll = () => setIsOpen(false);
-    document.addEventListener("mousedown", handleClose);
-    document.addEventListener("scroll", handleScroll, true);
-    return () => {
-      document.removeEventListener("mousedown", handleClose);
-      document.removeEventListener("scroll", handleScroll, true);
-    };
-  }, [isOpen]);
-
-  // ── 팝오버 드래그 ────────────────────────────────────────────────────
-  const onPopoverDragStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const startLeft = typeof popoverStyle.left === "number" ? popoverStyle.left : 0;
-    const startTop = typeof popoverStyle.top === "number" ? popoverStyle.top : 0;
-
-    const onMove = (ev: MouseEvent) => {
-      setPopoverStyle((prev) => ({
-        ...prev,
-        left: startLeft + ev.clientX - startX,
-        top: startTop + ev.clientY - startY,
-      }));
-    };
-    const onUp = () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
   };
 
   return (
@@ -133,31 +87,17 @@ export default function AssetWrapper({
         </button>
       </div>
 
-      {/* 설정 팝오버 (portal — overflow 클리핑 완전 탈출) */}
-      {isOpen &&
-        createPortal(
-          <div
-            ref={popoverRef}
-            style={{ position: "fixed", zIndex: 9999, ...popoverStyle }}
-            className="bg-neutral-800 border border-neutral-600 rounded-lg shadow-2xl overflow-hidden"
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            {/* 드래그 핸들 */}
-            <div
-              onMouseDown={onPopoverDragStart}
-              className="h-4 flex items-center justify-center cursor-grab active:cursor-grabbing bg-neutral-900/50 hover:bg-neutral-700/60 transition-colors"
-              title="드래그하여 이동"
-            >
-              <div className="flex gap-0.5">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="w-0.5 h-0.5 rounded-full bg-neutral-500" />
-                ))}
-              </div>
-            </div>
-            {toolbar}
-          </div>,
-          document.body,
-        )}
+      {/* 설정 팝오버 (DraggablePopover 컴포넌트 사용) */}
+      <DraggablePopover
+        isOpen={isOpen}
+        onClose={() => setIsOpen(false)}
+        excludeRefs={[barRef, wrapperRef]} // 에셋 버튼 클릭 무시
+        initialLeft={typeof popoverStyle.left === "number" ? popoverStyle.left : 0}
+        initialTop={typeof popoverStyle.top === "number" ? popoverStyle.top : 0}
+        minWidth={typeof popoverStyle.minWidth === "number" ? popoverStyle.minWidth : 280}
+      >
+        {toolbar}
+      </DraggablePopover>
     </div>
   );
 }

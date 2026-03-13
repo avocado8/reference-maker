@@ -9,7 +9,7 @@ export function getBackgroundStyle(fields: BackgroundFields): string {
   if (fields.backgroundType === "transparent") {
     return "transparent";
   }
-  return fields.backgroundColor ?? "transparent";
+  return fields.backgroundColor ?? "white";
 }
 
 interface BackgroundControlProps extends BackgroundFields {
@@ -73,9 +73,7 @@ export default function BackgroundControl({
             <input
               type="color"
               value={gradientColorStart ?? "#ffffff"}
-              onChange={(e) =>
-                onChange({ gradientColorStart: e.target.value })
-              }
+              onChange={(e) => onChange({ gradientColorStart: e.target.value })}
               className="w-8 h-6 rounded cursor-pointer border-0 bg-transparent"
             />
           </div>

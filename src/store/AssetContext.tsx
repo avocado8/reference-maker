@@ -19,11 +19,8 @@ interface AssetContextType {
   updateAsset: (id: string, updates: any) => void;
   updateFreeAsset: (assetId: string, updates: Partial<FreeAssetType>) => void;
   setTemplateSlot: (slotId: string, assetId: string) => void;
-  addSticker: () => string;
-  updateSticker: (
-    id: string,
-    updates: Partial<Omit<StickerAssetType, "id">>,
-  ) => void;
+  addSticker: (stickerType: "image" | "text") => string;
+  updateSticker: (id: string, updates: any) => void;
   removeSticker: (id: string) => void;
   clearAll: () => void;
 }
@@ -95,7 +92,10 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   const removeAsset = useCallback((id: string) => {
     setAssets((prev) => {
       const assetToRemove = prev.find((a) => a.id === id);
-      if (assetToRemove?.type === "image" && assetToRemove.url.startsWith("blob:")) {
+      if (
+        assetToRemove?.type === "image" &&
+        assetToRemove.url.startsWith("blob:")
+      ) {
         URL.revokeObjectURL(assetToRemove.url);
       }
       return prev.filter((a) => a.id !== id);
@@ -129,29 +129,45 @@ export function AssetProvider({ children }: { children: ReactNode }) {
     setTemplateSlots((prev) => ({ ...prev, [slotId]: assetId }));
   }, []);
 
-  const addSticker = useCallback((): string => {
+  const addSticker = useCallback((stickerType: "image" | "text"): string => {
     const id = crypto.randomUUID();
     const offset = Math.floor(Math.random() * 100);
-    setStickerAssets((prev) => [
-      ...prev,
-      { id, url: "", scale: 1, x: 80 + offset, y: 80 + offset, rotate: 0 },
-    ]);
+    const base = {
+      id,
+      scale: 1,
+      x: 80 + offset,
+      y: 80 + offset,
+      rotate: 0,
+      type: "sticker" as const,
+    };
+
+    if (stickerType === "image") {
+      setStickerAssets((prev) => [
+        ...prev,
+        { ...base, stickerType: "image", url: "" },
+      ]);
+    } else {
+      setStickerAssets((prev) => [
+        ...prev,
+        { ...base, stickerType: "text", content: "새 텍스트" },
+      ]);
+    }
     return id;
   }, []);
 
-  const updateSticker = useCallback(
-    (id: string, updates: Partial<Omit<StickerAssetType, "id">>) => {
-      setStickerAssets((prev) =>
-        prev.map((s) => (s.id === id ? { ...s, ...updates } : s)),
-      );
-    },
-    [],
-  );
+  const updateSticker = useCallback((id: string, updates: any) => {
+    setStickerAssets((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...updates } : s)),
+    );
+  }, []);
 
   const removeSticker = useCallback((id: string) => {
     setStickerAssets((prev) => {
       const stickerToRemove = prev.find((s) => s.id === id);
-      if (stickerToRemove?.url.startsWith("blob:")) {
+      if (
+        stickerToRemove?.stickerType === "image" &&
+        stickerToRemove.url.startsWith("blob:")
+      ) {
         URL.revokeObjectURL(stickerToRemove.url);
       }
       return prev.filter((s) => s.id !== id);
@@ -165,7 +181,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
       }
     });
     stickerAssets.forEach((s) => {
-      if (s.url.startsWith("blob:")) {
+      if (s.stickerType === "image" && s.url.startsWith("blob:")) {
         URL.revokeObjectURL(s.url);
       }
     });

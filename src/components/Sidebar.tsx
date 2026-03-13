@@ -8,7 +8,6 @@ import {
   Text,
   Palette,
   Pencil,
-  Sticker,
   X,
 } from "lucide-react";
 import clsx from "clsx";
@@ -485,12 +484,22 @@ export default function Sidebar({ className }: SidebarProps) {
                   )}
                 </div>
 
-                <button
-                  onClick={() => addSticker()}
-                  className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
-                >
-                  <Sticker size={16} /> 스티커 추가
-                </button>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => addSticker("image")}
+                    className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                  >
+                    <ImageIcon size={16} />
+                    <span className="text-[10px]">이미지 스티커</span>
+                  </button>
+                  <button
+                    onClick={() => addSticker("text")}
+                    className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                  >
+                    <Text size={16} />
+                    <span className="text-[10px]">텍스트 스티커</span>
+                  </button>
+                </div>
               </div>
             </section>
           </div>
@@ -560,12 +569,22 @@ export default function Sidebar({ className }: SidebarProps) {
                   <Palette size={16} /> 컬러 팔레트 추가
                 </button>
 
-                <button
-                  onClick={() => addSticker()}
-                  className="w-full flex items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
-                >
-                  <Sticker size={16} /> 스티커 추가
-                </button>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <button
+                    onClick={() => addSticker("image")}
+                    className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                  >
+                    <ImageIcon size={16} />
+                    <span className="text-[10px]">이미지 스티커</span>
+                  </button>
+                  <button
+                    onClick={() => addSticker("text")}
+                    className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                  >
+                    <Text size={16} />
+                    <span className="text-[10px]">텍스트 스티커</span>
+                  </button>
+                </div>
               </>
             )}
           </div>

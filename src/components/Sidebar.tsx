@@ -18,6 +18,10 @@ interface SidebarProps {
   className?: string;
 }
 
+const renderDivider = () => {
+  return <div className="border-t border-neutral-700"></div>;
+};
+
 export default function Sidebar({ className }: SidebarProps) {
   const { settings, updateSettings } = useCanvasSettings();
   const { addAsset, addSticker, clearAll } = useAssets();
@@ -134,15 +138,11 @@ export default function Sidebar({ className }: SidebarProps) {
                         }}
                         className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-sm text-white"
                       >
-                        <option value="single-portrait">
-                          1인 세로 템플릿 (1200x1600)
-                        </option>
+                        <option value="single-portrait">1인 세로 템플릿</option>
                         <option value="double-symmetric">
-                          2인 대칭 템플릿 (1600x1200)
+                          2인 대칭 템플릿
                         </option>
-                        <option value="double-twoshot">
-                          2인 투샷 템플릿 (1600x1200)
-                        </option>
+                        <option value="double-twoshot">2인 투샷 템플릿</option>
                         <option value="multi">다인 템플릿 (동적 크기)</option>
                       </select>
 
@@ -190,6 +190,8 @@ export default function Sidebar({ className }: SidebarProps) {
                     </select>
                   )}
                 </div>
+
+                {renderDivider()}
 
                 <div>
                   <label className="block text-xs text-neutral-400 mb-2">
@@ -427,6 +429,8 @@ export default function Sidebar({ className }: SidebarProps) {
                   )}
                 </div>
 
+                {renderDivider()}
+
                 <div>
                   <label className="block text-xs text-neutral-400 mb-1">
                     배경 노이즈
@@ -471,7 +475,7 @@ export default function Sidebar({ className }: SidebarProps) {
                   {settings.textureType !== "none" && (
                     <div className="pt-2">
                       <SliderControl
-                        label="노이즈 크기"
+                        label="노이즈 농도"
                         value={settings.textureDensity}
                         onChange={(val) =>
                           updateSettings({ textureDensity: val })
@@ -484,21 +488,28 @@ export default function Sidebar({ className }: SidebarProps) {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => addSticker("image")}
-                    className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
-                  >
-                    <ImageIcon size={16} />
-                    <span className="text-[10px]">이미지 스티커</span>
-                  </button>
-                  <button
-                    onClick={() => addSticker("text")}
-                    className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
-                  >
-                    <Text size={16} />
-                    <span className="text-[10px]">텍스트 스티커</span>
-                  </button>
+                {renderDivider()}
+
+                <div className="flex flex-col gap-2">
+                  <label className="block text-xs text-neutral-400 mb-1">
+                    스티커 추가
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => addSticker("image")}
+                      className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                    >
+                      <ImageIcon size={16} />
+                      <span className="text-[10px]">이미지 스티커</span>
+                    </button>
+                    <button
+                      onClick={() => addSticker("text")}
+                      className="flex flex-col items-center justify-center gap-2 bg-neutral-800 hover:bg-neutral-700 py-3 rounded-lg border border-neutral-700 transition"
+                    >
+                      <Text size={16} />
+                      <span className="text-[10px]">텍스트 스티커</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </section>
@@ -512,17 +523,15 @@ export default function Sidebar({ className }: SidebarProps) {
                 <div className="text-sm text-neutral-300 bg-neutral-800 rounded-lg p-4 leading-relaxed">
                   <p className="font-bold text-neutral-300 mb-2">템플릿 모드</p>
                   <p>
-                    사전 제작된 템플릿을 활용해 자료를 제작합니다. <br />{" "}
-                    캔버스의 각 영역을 클릭하면 이미지, 텍스트, 팔레트 중 원하는
-                    유형을 선택해 추가할 수 있습니다.
+                    사전 제작된 템플릿을 활용해 자료를 제작합니다. <br />
+                    <br />
+                    캔버스의 각 영역을 클릭하면 원하는 자료를 추가할 수
+                    있습니다. 영역 하단의 설정 버튼으로 사진 크기, 글씨 색 등을
+                    변경할 수 있습니다.
                     <br />
                     <br />
-                    영역 하단의 설정 버튼으로 사진 크기, 글씨 색 등을 변경할 수
-                    있습니다.
-                    <br />
-                    <br />
-                    업로드한 자료는 로컬 브라우저에서만 사용되며 저장되지
-                    않습니다.
+                    사이드바의 '스타일 설정'에서 캔버스 스타일을 수정하고,
+                    스티커를 추가할 수 있습니다.
                   </p>
                   <p className="mt-2 text-neutral-400 text-xs">
                     자료를 추가하면 우상단에 × 버튼이 나타나 삭제할 수 있습니다.

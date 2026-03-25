@@ -7,6 +7,7 @@ import "./index.css";
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
+  sendDefaultPii: true,
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
   integrations: [

@@ -1,5 +1,7 @@
+import * as Sentry from "@sentry/react";
 import { useRef, useState, useEffect } from "react";
 import { useCanvasSettings } from "../store/CanvasSettingsContext";
+import { useAssets } from "../store/AssetContext";
 import { Download } from "lucide-react";
 import { toPng } from "html-to-image";
 import TemplateModeCanvas from "./canvas/TemplateModeCanvas";
@@ -13,6 +15,7 @@ const MULTI_PICKER_DIMENSIONS = { width: 1200, height: 900 };
 
 export default function CanvasWorkspace() {
   const { settings } = useCanvasSettings();
+  const { assets, stickerAssets } = useAssets();
   const canvasRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -47,6 +50,26 @@ export default function CanvasWorkspace() {
   }, [dimensions.width]);
 
   const handleDownload = async () => {
+    // Sentry 로깅 데이터 준비
+    const stats = {
+      imageCount: assets.filter((a) => a.type === "image").length,
+      textCount: assets.filter((a) => a.type === "text").length,
+      paletteCount: assets.filter((a) => a.type === "palette").length,
+      stickerCount: stickerAssets.length,
+      stickerImageCount: stickerAssets.filter((s) => s.stickerType === "image")
+        .length,
+      stickerTextCount: stickerAssets.filter((s) => s.stickerType === "text")
+        .length,
+    };
+
+    // 캔버스 설정에서 대용량 데이터(이미지) 제외
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { backgroundImage, ...sanitizedSettings } = settings;
+
+    Sentry.setContext("canvas_state", sanitizedSettings);
+    Sentry.setContext("assets_stats", stats);
+    Sentry.captureMessage("download image");
+
     if (!canvasRef.current) return;
     try {
       setIsLoading(true);
@@ -83,6 +106,7 @@ export default function CanvasWorkspace() {
     } catch (err) {
       console.error("Failed to download image", err);
       alert("이미지 저장 중 오류가 발생했습니다.");
+      Sentry.captureException(err);
     }
   };
 

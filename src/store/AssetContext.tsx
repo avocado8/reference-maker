@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { createContext, useContext, useState, useCallback } from "react";
 import type { ReactNode } from "react";
 import type {
@@ -38,6 +39,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   const [stickerAssets, setStickerAssets] = useState<StickerAssetType[]>([]);
 
   const addAsset = useCallback((type: AssetType, initialData?: any): string => {
+    Sentry.captureMessage(`add ${type} asset`);
     const id = crypto.randomUUID();
     let newAsset: ImageAssetType | TextAssetType | PaletteAssetType;
 
@@ -90,6 +92,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const removeAsset = useCallback((id: string) => {
+    Sentry.captureMessage(`remove asset`);
     setAssets((prev) => {
       const assetToRemove = prev.find((a) => a.id === id);
       if (
@@ -111,6 +114,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateAsset = useCallback((id: string, updates: any) => {
+    Sentry.captureMessage(`update asset`);
     setAssets((prev) =>
       prev.map((a) => (a.id === id ? { ...a, ...updates } : a)),
     );
@@ -130,6 +134,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addSticker = useCallback((stickerType: "image" | "text"): string => {
+    Sentry.captureMessage(`add ${stickerType} sticker`);
     const id = crypto.randomUUID();
     const offset = Math.floor(Math.random() * 100);
     const base = {
@@ -162,6 +167,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const removeSticker = useCallback((id: string) => {
+    Sentry.captureMessage(`remove sticker`);
     setStickerAssets((prev) => {
       const stickerToRemove = prev.find((s) => s.id === id);
       if (

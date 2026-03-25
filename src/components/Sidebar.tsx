@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { useState, useRef } from "react";
 import { useCanvasSettings } from "../store/CanvasSettingsContext";
 import { useAssets } from "../store/AssetContext";
@@ -56,7 +57,10 @@ export default function Sidebar({ className }: SidebarProps) {
 
       <div className="flex bg-neutral-800 p-1 m-4 rounded-lg">
         <button
-          onClick={() => setActiveTab("info")}
+          onClick={() => {
+            Sentry.captureMessage(`change tab to info`);
+            setActiveTab("info");
+          }}
           className={clsx(
             "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
             activeTab === "info"
@@ -67,7 +71,10 @@ export default function Sidebar({ className }: SidebarProps) {
           안내
         </button>
         <button
-          onClick={() => setActiveTab("settings")}
+          onClick={() => {
+            Sentry.captureMessage(`change tab to settings`);
+            setActiveTab("settings");
+          }}
           className={clsx(
             "flex-1 py-1.5 text-sm font-medium rounded-md transition-colors",
             activeTab === "settings"
@@ -128,6 +135,9 @@ export default function Sidebar({ className }: SidebarProps) {
                       <select
                         value={settings.templateType ?? "single-portrait"}
                         onChange={(e) => {
+                          Sentry.captureMessage(
+                            `change template type to ${e.target.value}`,
+                          );
                           const newType = e.target.value as TemplateType;
                           // multi가 아닌 템플릿으로 변경 시 multiCount 초기화 → 다음에 multi 재선택 시 피커 표시
                           updateSettings(
@@ -157,9 +167,12 @@ export default function Sidebar({ className }: SidebarProps) {
                               (n) => (
                                 <button
                                   key={n}
-                                  onClick={() =>
-                                    updateSettings({ multiCount: n })
-                                  }
+                                  onClick={() => {
+                                    Sentry.captureMessage(
+                                      `change multi template count to ${n}`,
+                                    );
+                                    updateSettings({ multiCount: n });
+                                  }}
                                   className={clsx(
                                     "w-8 h-8 text-xs font-bold rounded-md transition-all",
                                     settings.multiCount === n
@@ -207,9 +220,12 @@ export default function Sidebar({ className }: SidebarProps) {
                     ).map(({ value, label }) => (
                       <button
                         key={value}
-                        onClick={() =>
-                          updateSettings({ backgroundType: value })
-                        }
+                        onClick={() => {
+                          Sentry.captureMessage(
+                            `change background type to ${value}`,
+                          );
+                          updateSettings({ backgroundType: value });
+                        }}
                         className={clsx(
                           "flex-1 py-1 text-[10px] font-medium rounded transition-colors",
                           (settings.backgroundType ?? "solid") === value
@@ -227,9 +243,9 @@ export default function Sidebar({ className }: SidebarProps) {
                       <input
                         type="color"
                         value={settings.backgroundColor}
-                        onChange={(e) =>
-                          updateSettings({ backgroundColor: e.target.value })
-                        }
+                        onChange={(e) => {
+                          updateSettings({ backgroundColor: e.target.value });
+                        }}
                         className="w-10 h-10 rounded border-0 bg-transparent cursor-pointer"
                       />
                       <span className="text-sm uppercase text-neutral-300 font-mono">
@@ -438,7 +454,10 @@ export default function Sidebar({ className }: SidebarProps) {
                   {/* none / dark / light 선택 */}
                   <div className="flex gap-2">
                     <button
-                      onClick={() => updateSettings({ textureType: "none" })}
+                      onClick={() => {
+                        Sentry.captureMessage("change texture type to none");
+                        updateSettings({ textureType: "none" });
+                      }}
                       className={clsx(
                         "flex-1 py-2 rounded-lg border transition-colors",
                         settings.textureType === "none"
@@ -449,7 +468,10 @@ export default function Sidebar({ className }: SidebarProps) {
                       <span className="text-xs">없음</span>
                     </button>
                     <button
-                      onClick={() => updateSettings({ textureType: "dark" })}
+                      onClick={() => {
+                        Sentry.captureMessage("change texture type to dark");
+                        updateSettings({ textureType: "dark" });
+                      }}
                       className={clsx(
                         "flex-1 py-2 rounded-lg border transition-colors",
                         settings.textureType === "dark"
@@ -460,7 +482,10 @@ export default function Sidebar({ className }: SidebarProps) {
                       <span className="text-xs">어두운 노이즈</span>
                     </button>
                     <button
-                      onClick={() => updateSettings({ textureType: "light" })}
+                      onClick={() => {
+                        Sentry.captureMessage("change texture type to light");
+                        updateSettings({ textureType: "light" });
+                      }}
                       className={clsx(
                         "flex-1 py-2 rounded-lg border transition-colors",
                         settings.textureType === "light"

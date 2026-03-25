@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { useRef, useState, useEffect } from "react";
 import { useCanvasSettings } from "../store/CanvasSettingsContext";
 import { Download } from "lucide-react";
@@ -47,6 +48,7 @@ export default function CanvasWorkspace() {
   }, [dimensions.width]);
 
   const handleDownload = async () => {
+    Sentry.captureMessage("download image");
     if (!canvasRef.current) return;
     try {
       setIsLoading(true);
@@ -83,6 +85,7 @@ export default function CanvasWorkspace() {
     } catch (err) {
       console.error("Failed to download image", err);
       alert("이미지 저장 중 오류가 발생했습니다.");
+      Sentry.captureException(err);
     }
   };
 

@@ -6,6 +6,7 @@ import type { ImageAssetType } from "../types/assets";
 import AssetWrapper from "./AssetWrapper";
 import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 import SliderControl from "./SliderControl";
+import { fileToDataUrl } from "../utils/fileToDataUrl";
 
 interface ImageAssetProps {
   asset: ImageAssetType;
@@ -98,9 +99,12 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        onChange={(e) => {
+        onChange={async (e) => {
           const file = e.target.files?.[0];
-          if (file) updateAsset(asset.id, { url: URL.createObjectURL(file) });
+          if (file) {
+            const url = await fileToDataUrl(file);
+            updateAsset(asset.id, { url });
+          }
         }}
         className="hidden"
       />

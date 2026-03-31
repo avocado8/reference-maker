@@ -38,27 +38,10 @@ export function CanvasSettingsProvider({ children }: { children: ReactNode }) {
   const [settings, setSettings] = useState<CanvasSettings>(defaultSettings);
 
   const updateSettings = (newSettings: Partial<CanvasSettings>) => {
-    setSettings((prev) => {
-      // 배경 이미지가 변경되는 경우 이전 blob URL 해제
-      if (
-        newSettings.backgroundImage !== undefined &&
-        prev.backgroundImage &&
-        prev.backgroundImage !== newSettings.backgroundImage &&
-        prev.backgroundImage.startsWith("blob:")
-      ) {
-        URL.revokeObjectURL(prev.backgroundImage);
-      }
-      return { ...prev, ...newSettings };
-    });
+    setSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
   const resetSettings = () => {
-    if (
-      settings.backgroundImage &&
-      settings.backgroundImage.startsWith("blob:")
-    ) {
-      URL.revokeObjectURL(settings.backgroundImage);
-    }
     setSettings(defaultSettings);
   };
 

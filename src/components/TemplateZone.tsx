@@ -10,6 +10,7 @@ import ImageAsset from "./ImageAsset";
 import TextAsset from "./TextAsset";
 import ColorPaletteAsset from "./ColorPaletteAsset";
 import { ImageIcon, Palette, Plus, Type } from "lucide-react";
+import { fileToDataUrl } from "../utils/fileToDataUrl";
 
 interface TemplateZoneProps {
   slotId: string;
@@ -40,10 +41,11 @@ export default function TemplateZone({
     setShowPicker(false);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      handleAdd("image", undefined, { url: URL.createObjectURL(file) });
+      const url = await fileToDataUrl(file);
+      handleAdd("image", undefined, { url });
     }
     if (fileInputRef.current) {
       fileInputRef.current.value = "";

@@ -20,6 +20,7 @@ import clsx from "clsx";
 import SliderControl from "./SliderControl";
 import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 import DraggablePopover from "./DraggablePopover";
+import { fileToDataUrl } from "../utils/fileToDataUrl";
 
 // 말풍선 꼬리 CSS 속성 생성 유틸리티
 function getTailStyle(
@@ -151,10 +152,10 @@ export default function StickerAsset({
   };
 
   // ── 이미지 업로드 ──────────────────────────────────────
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
+    const url = await fileToDataUrl(file);
     updateSticker(sticker.id, { url });
     e.target.value = "";
   };

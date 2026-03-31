@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import SliderControl from "./SliderControl";
+import { fileToDataUrl } from "../utils/fileToDataUrl";
 import type { CanvasOrientation, TemplateType } from "../types/canvas";
 
 interface SidebarProps {
@@ -430,10 +431,10 @@ export default function Sidebar({ className }: SidebarProps) {
                           type="file"
                           ref={bgImageInputRef}
                           accept="image/*"
-                          onChange={(e) => {
+                          onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              const url = URL.createObjectURL(file);
+                              const url = await fileToDataUrl(file);
                               updateSettings({ backgroundImage: url });
                             }
                             e.target.value = "";

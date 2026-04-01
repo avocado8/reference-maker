@@ -20,7 +20,7 @@ import clsx from "clsx";
 import SliderControl from "./SliderControl";
 import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 import DraggablePopover from "./DraggablePopover";
-import { fileToDataUrl } from "../utils/fileToDataUrl";
+import { useImageUpload } from "../hooks/useImageUpload";
 
 // 말풍선 꼬리 CSS 속성 생성 유틸리티
 function getTailStyle(
@@ -152,21 +152,17 @@ export default function StickerAsset({
   };
 
   // ── 이미지 업로드 ──────────────────────────────────────
-  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const url = await fileToDataUrl(file);
-      updateSticker(sticker.id, { url });
-    } catch (error) {
+  const { handleImageUpload: handleFile } = useImageUpload({
+    onSuccess: (url) => updateSticker(sticker.id, { url }),
+    onError: (error) => {
       console.error("Sticker image upload failed:", error);
       alert(
         "스티커 이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
       );
-    }
-    e.target.value = "";
-  };
+    },
+  });
 
+  // ── Popover Toggles ────────────────────────────────────
   return (
     <>
       <div

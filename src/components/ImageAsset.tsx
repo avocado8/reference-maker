@@ -6,7 +6,7 @@ import type { ImageAssetType } from "../types/assets";
 import AssetWrapper from "./AssetWrapper";
 import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 import SliderControl from "./SliderControl";
-import { fileToDataUrl } from "../utils/fileToDataUrl";
+import { useImageUpload } from "../hooks/useImageUpload";
 
 interface ImageAssetProps {
   asset: ImageAssetType;
@@ -15,6 +15,16 @@ interface ImageAssetProps {
 function ImageToolbar({ asset }: { asset: ImageAssetType }) {
   const { updateAsset } = useAssets();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { handleImageUpload } = useImageUpload({
+    onSuccess: (url) => updateAsset(asset.id, { url }),
+    onError: (error) => {
+      console.error("Asset image replacement failed:", error);
+      alert(
+        "이미지 교체에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
+      );
+    },
+  });
 
   return (
     <div className="min-w-[260px]">
@@ -99,20 +109,7 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        onChange={async (e) => {
-          const file = e.target.files?.[0];
-          if (file) {
-            try {
-              const url = await fileToDataUrl(file);
-              updateAsset(asset.id, { url });
-            } catch (error) {
-              console.error("Asset image replacement failed:", error);
-              alert(
-                "이미지 교체에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-              );
-            }
-          }
-        }}
+        onChange={handleImageUpload}
         className="hidden"
       />
     </div>

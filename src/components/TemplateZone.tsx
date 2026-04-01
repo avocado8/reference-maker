@@ -1,16 +1,16 @@
-import { useState, useRef } from "react";
+import { ImageIcon, Palette, Plus, Type } from "lucide-react";
+import { useRef, useState } from "react";
+import { useImageUpload } from "../hooks/useImageUpload";
 import { useAssets } from "../store/AssetContext";
-import type { AssetType } from "../types/assets";
 import type {
+  AssetType,
   ImageAssetType,
-  TextAssetType,
   PaletteAssetType,
+  TextAssetType,
 } from "../types/assets";
+import ColorPaletteAsset from "./ColorPaletteAsset";
 import ImageAsset from "./ImageAsset";
 import TextAsset from "./TextAsset";
-import ColorPaletteAsset from "./ColorPaletteAsset";
-import { ImageIcon, Palette, Plus, Type } from "lucide-react";
-import { fileToDataUrl } from "../utils/fileToDataUrl";
 
 interface TemplateZoneProps {
   slotId: string;
@@ -41,23 +41,15 @@ export default function TemplateZone({
     setShowPicker(false);
   };
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      try {
-        const url = await fileToDataUrl(file);
-        handleAdd("image", undefined, { url });
-      } catch (error) {
-        console.error("Template zone image upload failed:", error);
-        alert(
-          "이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-        );
-      }
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
+  const { handleImageUpload: handleImageChange } = useImageUpload({
+    onSuccess: (url) => handleAdd("image", undefined, { url }),
+    onError: (error) => {
+      console.error("Template zone image upload failed:", error);
+      alert(
+        "이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
+      );
+    },
+  });
 
   // 에셋이 있으면 AssetWrapper가 내장된 각 컴포넌트를 그대로 렌더링
   // (X 버튼, 툴바는 AssetWrapper가 제공)

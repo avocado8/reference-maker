@@ -72,11 +72,11 @@ export interface ImageStickerAssetType extends BaseStickerAssetType {
   url: string;
   showAttribution?: boolean; // 출처 표기 on/off
   attributionText?: string; // 출처 텍스트
+  style: "shadow" | "border" | "none";
 }
 
 export interface TextStickerAssetType
-  extends BaseStickerAssetType,
-    BackgroundFields {
+  extends BaseStickerAssetType, BackgroundFields {
   stickerType: "text";
   content: string;
   color?: string; // 텍스트 색상 (CSS color)

@@ -17,6 +17,7 @@ interface TemplateZoneProps {
   placeholder?: string;
   className?: string;
   allowedTypes?: AssetType[];
+  shape?: "rect" | "circle";
 }
 
 export default function TemplateZone({
@@ -24,6 +25,7 @@ export default function TemplateZone({
   placeholder,
   className,
   allowedTypes,
+  shape,
 }: TemplateZoneProps) {
   const { assets, addAsset, templateSlots, setTemplateSlot } = useAssets();
   const [showPicker, setShowPicker] = useState(false);
@@ -43,12 +45,6 @@ export default function TemplateZone({
 
   const { handleImageUpload: handleImageChange } = useImageUpload({
     onSuccess: (url) => handleAdd("image", undefined, { url }),
-    onError: (error) => {
-      console.error("Template zone image upload failed:", error);
-      alert(
-        "이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-      );
-    },
   });
 
   // 에셋이 있으면 AssetWrapper가 내장된 각 컴포넌트를 그대로 렌더링
@@ -62,11 +58,11 @@ export default function TemplateZone({
         className={`w-full h-full ${className || ""} ${!isTransparent ? "bg-neutral-100 shadow-md" : ""} transition-colors duration-200`}
       >
         {asset.type === "image" && (
-          <ImageAsset asset={asset as ImageAssetType} />
+          <ImageAsset asset={asset as ImageAssetType} zoneShape={shape} />
         )}
-        {asset.type === "text" && <TextAsset asset={asset as TextAssetType} />}
+        {asset.type === "text" && <TextAsset asset={asset as TextAssetType} zoneShape={shape} />}
         {asset.type === "palette" && (
-          <ColorPaletteAsset asset={asset as PaletteAssetType} />
+          <ColorPaletteAsset asset={asset as PaletteAssetType} zoneShape={shape} />
         )}
       </div>
     );

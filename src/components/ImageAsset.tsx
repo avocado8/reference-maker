@@ -10,6 +10,7 @@ import { useImageUpload } from "../hooks/useImageUpload";
 
 interface ImageAssetProps {
   asset: ImageAssetType;
+  zoneShape?: "rect" | "circle";
 }
 
 function ImageToolbar({ asset }: { asset: ImageAssetType }) {
@@ -18,12 +19,6 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
 
   const { handleImageUpload } = useImageUpload({
     onSuccess: (url) => updateAsset(asset.id, { url }),
-    onError: (error) => {
-      console.error("Asset image replacement failed:", error);
-      alert(
-        "이미지 교체에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-      );
-    },
   });
 
   return (
@@ -116,7 +111,7 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
   );
 }
 
-export default function ImageAsset({ asset }: ImageAssetProps) {
+export default function ImageAsset({ asset, zoneShape }: ImageAssetProps) {
   const { updateAsset } = useAssets();
   const [isDragging, setIsDragging] = useState(false);
 
@@ -150,7 +145,11 @@ export default function ImageAsset({ asset }: ImageAssetProps) {
   };
 
   return (
-    <AssetWrapper assetId={asset.id} toolbar={<ImageToolbar asset={asset} />}>
+    <AssetWrapper
+      assetId={asset.id}
+      toolbar={<ImageToolbar asset={asset} />}
+      zoneShape={zoneShape}
+    >
       <div
         className="w-full h-full relative select-none"
         style={{ background: getBackgroundStyle(asset) }}

@@ -14,29 +14,25 @@ import {
 import clsx from "clsx";
 import SliderControl from "./SliderControl";
 import { useImageUpload } from "../hooks/useImageUpload";
+import { TEMPLATES } from "../config/templates";
 import type { CanvasOrientation, TemplateType } from "../types/canvas";
 
 interface SidebarProps {
   className?: string;
+  onClose?: () => void;
 }
 
 const renderDivider = () => {
   return <div className="border-t border-neutral-700"></div>;
 };
 
-export default function Sidebar({ className }: SidebarProps) {
+export default function Sidebar({ className, onClose }: SidebarProps) {
   const { settings, updateSettings } = useCanvasSettings();
   const { addAsset, addSticker, clearAll } = useAssets();
   const [activeTab, setActiveTab] = useState<"info" | "settings">("settings");
   const bgImageInputRef = useRef<HTMLInputElement>(null);
   const { handleImageUpload: handleBgUpload } = useImageUpload({
     onSuccess: (url) => updateSettings({ backgroundImage: url }),
-    onError: (error) => {
-      console.error("Background image upload failed:", error);
-      alert(
-        "배경 이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-      );
-    },
   });
 
   const handleModeChange = (mode: "template" | "free") => {
@@ -58,11 +54,17 @@ export default function Sidebar({ className }: SidebarProps) {
         className,
       )}
     >
-      <div className="p-4 border-b border-neutral-700">
+      <div className="p-4 border-b border-neutral-700 flex items-center justify-between">
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
           <Pencil className="text-blue-500" />
           커미션 자료 메이커
         </h1>
+        <button
+          onClick={onClose}
+          className="md:hidden p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       <div className="flex bg-neutral-800 p-1 m-4 rounded-lg">
@@ -158,12 +160,11 @@ export default function Sidebar({ className }: SidebarProps) {
                         }}
                         className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-sm text-white"
                       >
-                        <option value="single-portrait">1인 세로 템플릿</option>
-                        <option value="double-symmetric">
-                          2인 대칭 템플릿
-                        </option>
-                        <option value="double-twoshot">2인 투샷 템플릿</option>
-                        <option value="multi">다인 템플릿 (동적 크기)</option>
+                        {Object.entries(TEMPLATES).map(([id, config]) => (
+                          <option key={id} value={id}>
+                            {config.label}
+                          </option>
+                        ))}
                       </select>
 
                       {/* 다인 템플릿: 인원수 선택 후 변경 버튼 */}

@@ -157,6 +157,7 @@ export default function Sidebar({ className }: SidebarProps) {
                           2인 대칭 템플릿
                         </option>
                         <option value="double-twoshot">2인 투샷 템플릿</option>
+                        <option value="double-simple">2인 간단 템플릿</option>
                         <option value="multi">다인 템플릿 (동적 크기)</option>
                       </select>
 

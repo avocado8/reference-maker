@@ -5,6 +5,7 @@ export type TemplateType =
   | "double-landscape"
   | "double-symmetric"
   | "double-twoshot"
+  | "double-simple"
   | "multi";
 
 export interface CanvasSettings {

@@ -9,6 +9,7 @@ export const getTemplateOrientation = (
     case "double-landscape":
     case "double-symmetric":
     case "double-twoshot":
+    case "double-simple":
       return "landscape";
     default:
       return "portrait";

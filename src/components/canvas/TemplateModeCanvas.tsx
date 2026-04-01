@@ -4,6 +4,7 @@ import MultiTemplate from "./templates/MultiTemplate";
 import SingleTemplatePortrait from "./templates/SingleTemplatePortrait";
 import { getMultiCols } from "../../utils/getMultiDimensions";
 import DoubleTemplateTwoshot from "./templates/DoubleTemplateTwoshot";
+import { DoubleSimpleTemplate } from "./templates/DoubleSimpleTemplate";
 
 export default function TemplateModeCanvas() {
   const { settings } = useCanvasSettings();
@@ -23,6 +24,7 @@ export default function TemplateModeCanvas() {
         <DoubleTemplateSymmetric />
       )}
       {settings.templateType === "double-twoshot" && <DoubleTemplateTwoshot />}
+      {settings.templateType === "double-simple" && <DoubleSimpleTemplate />}
       {settings.templateType === "multi" && renderMulti()}
     </div>
   );

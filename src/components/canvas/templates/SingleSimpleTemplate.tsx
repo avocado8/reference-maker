@@ -45,7 +45,7 @@ export const SingleSimpleTemplate = () => {
         </div>
 
         {/* 오른쪽 영역 */}
-        <div className="w-84 shrink-0 flex flex-col items-center gap-4">
+        <div className="w-96 shrink-0 flex flex-col items-center gap-4">
           <RightStackZone type="circle" />
           <RightStackZone type="small" />
           <RightStackZone type="large" />

@@ -1,6 +1,6 @@
 export async function fileToDataUrl(
   file: File,
-  maxWidthOrHeight: number = 2000,
+  maxWidthOrHeight: number = 2500,
   quality: number = 0.8,
 ): Promise<string> {
   return new Promise((resolve, reject) => {
@@ -48,9 +48,13 @@ export async function fileToDataUrl(
         // 투명도 등 유지를 위해 먼저 그려내기
         ctx.drawImage(img, 0, 0, width, height);
 
-        // 출력 타입 결정: PNG는 WebP로 시도하여 용량 절감 (투명도 유지), 나머지는 JPEG 활용 (브라우저 호환성)
+        // 출력 타입 결정: 투명화 이미지는 WebP로 시도, 나머지는 JPEG(GIF 미지원)
         const outputType =
-          file.type === "image/png" ? "image/webp" : "image/jpeg";
+          file.type === "image/png" ||
+          file.type === "image/webp" ||
+          file.type === "image/svg+xml"
+            ? "image/webp"
+            : "image/jpeg";
 
         try {
           const compressedDataUrl = canvas.toDataURL(outputType, quality);

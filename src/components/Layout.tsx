@@ -31,12 +31,14 @@ export default function Layout() {
       </div>
 
       {/* 모바일 메뉴 열기 버튼 */}
-      <button
-        className="md:hidden fixed top-3 left-3 z-40 bg-neutral-800 border border-neutral-700 p-2 rounded-lg text-neutral-300 hover:text-white shadow-lg transition-colors"
-        onClick={() => setSidebarOpen(true)}
-      >
-        <Menu size={20} />
-      </button>
+      {!sidebarOpen && (
+        <button
+          className="md:hidden fixed top-3 left-3 z-40 bg-neutral-800 border border-neutral-700 p-2 rounded-lg text-neutral-300 hover:text-white shadow-lg transition-colors"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <Menu size={20} />
+        </button>
+      )}
 
       {/* 캔버스가 스크롤될 수 있는 메인 작업 영역 */}
       <main className="flex-1 h-full overflow-auto relative flex flex-col">

@@ -208,7 +208,7 @@ export default function StickerAsset({
                       width: "auto",
                       height: "auto",
                       objectFit: "contain",
-                      filter: STICKER_STYLE[sticker.style],
+                      filter: STICKER_STYLE[sticker.style] ?? "",
                       pointerEvents: "none",
                       display: "block",
                     }}

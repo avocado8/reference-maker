@@ -35,8 +35,8 @@ function TopZone({ position }: { position: "left" | "center" | "right" }) {
   return (
     <div
       className={[
-        "h-25 rounded-2xl overflow-hidden",
-        position === "center" ? "flex-4" : "flex-1",
+        "h-24 rounded-2xl overflow-hidden",
+        position === "center" ? "flex-1" : "w-48",
       ].join(" ")}
     >
       <TemplateZone

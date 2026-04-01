@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import clsx from "clsx";
 import SliderControl from "./SliderControl";
+import { useImageUpload } from "../hooks/useImageUpload";
 import type { CanvasOrientation, TemplateType } from "../types/canvas";
 
 interface SidebarProps {
@@ -28,6 +29,15 @@ export default function Sidebar({ className }: SidebarProps) {
   const { addAsset, addSticker, clearAll } = useAssets();
   const [activeTab, setActiveTab] = useState<"info" | "settings">("settings");
   const bgImageInputRef = useRef<HTMLInputElement>(null);
+  const { handleImageUpload: handleBgUpload } = useImageUpload({
+    onSuccess: (url) => updateSettings({ backgroundImage: url }),
+    onError: (error) => {
+      console.error("Background image upload failed:", error);
+      alert(
+        "배경 이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
+      );
+    },
+  });
 
   const handleModeChange = (mode: "template" | "free") => {
     if (settings.mode === mode) return;
@@ -430,14 +440,7 @@ export default function Sidebar({ className }: SidebarProps) {
                           type="file"
                           ref={bgImageInputRef}
                           accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              const url = URL.createObjectURL(file);
-                              updateSettings({ backgroundImage: url });
-                            }
-                            e.target.value = "";
-                          }}
+                          onChange={handleBgUpload}
                           className="hidden"
                         />
                       </div>

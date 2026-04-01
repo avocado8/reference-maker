@@ -14,6 +14,7 @@ import {
 import clsx from "clsx";
 import SliderControl from "./SliderControl";
 import { useImageUpload } from "../hooks/useImageUpload";
+import { TEMPLATES } from "../config/templates";
 import type { CanvasOrientation, TemplateType } from "../types/canvas";
 
 interface SidebarProps {
@@ -152,13 +153,11 @@ export default function Sidebar({ className }: SidebarProps) {
                         }}
                         className="w-full bg-neutral-800 border border-neutral-700 rounded-md p-2 text-sm text-white"
                       >
-                        <option value="single-portrait">1인 세로 템플릿</option>
-                        <option value="double-symmetric">
-                          2인 대칭 템플릿
-                        </option>
-                        <option value="double-twoshot">2인 투샷 템플릿</option>
-                        <option value="double-simple">2인 간단 템플릿</option>
-                        <option value="multi">다인 템플릿 (동적 크기)</option>
+                        {Object.entries(TEMPLATES).map(([id, config]) => (
+                          <option key={id} value={id}>
+                            {config.label}
+                          </option>
+                        ))}
                       </select>
 
                       {/* 다인 템플릿: 인원수 선택 후 변경 버튼 */}

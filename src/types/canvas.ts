@@ -1,12 +1,8 @@
+import type { AvailableTemplateType } from "../config/templates";
+
 export type CanvasMode = "template" | "free";
 export type CanvasOrientation = "portrait" | "landscape";
-export type TemplateType =
-  | "single-portrait"
-  | "double-landscape"
-  | "double-symmetric"
-  | "double-twoshot"
-  | "double-simple"
-  | "multi";
+export type TemplateType = AvailableTemplateType;
 
 export interface CanvasSettings {
   mode: CanvasMode;

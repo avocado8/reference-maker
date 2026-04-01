@@ -154,12 +154,6 @@ export default function StickerAsset({
   // ── 이미지 업로드 ──────────────────────────────────────
   const { handleImageUpload: handleFile } = useImageUpload({
     onSuccess: (url) => updateSticker(sticker.id, { url }),
-    onError: (error) => {
-      console.error("Sticker image upload failed:", error);
-      alert(
-        "스티커 이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-      );
-    },
   });
 
   // ── Popover Toggles ────────────────────────────────────

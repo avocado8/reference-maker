@@ -31,12 +31,6 @@ export default function Sidebar({ className }: SidebarProps) {
   const bgImageInputRef = useRef<HTMLInputElement>(null);
   const { handleImageUpload: handleBgUpload } = useImageUpload({
     onSuccess: (url) => updateSettings({ backgroundImage: url }),
-    onError: (error) => {
-      console.error("Background image upload failed:", error);
-      alert(
-        "배경 이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-      );
-    },
   });
 
   const handleModeChange = (mode: "template" | "free") => {

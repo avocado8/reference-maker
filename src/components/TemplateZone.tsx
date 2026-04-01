@@ -43,12 +43,6 @@ export default function TemplateZone({
 
   const { handleImageUpload: handleImageChange } = useImageUpload({
     onSuccess: (url) => handleAdd("image", undefined, { url }),
-    onError: (error) => {
-      console.error("Template zone image upload failed:", error);
-      alert(
-        "이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
-      );
-    },
   });
 
   // 에셋이 있으면 AssetWrapper가 내장된 각 컴포넌트를 그대로 렌더링

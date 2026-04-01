@@ -4,6 +4,7 @@ import DoubleTemplateTwoshot from "../components/canvas/templates/DoubleTemplate
 import DoubleTemplateSymmetric from "../components/canvas/templates/DoubleTemplateSymmetric";
 import { DoubleSimpleTemplate } from "../components/canvas/templates/DoubleSimpleTemplate";
 import MultiTemplate from "../components/canvas/templates/MultiTemplate";
+import { SingleSimpleTemplate } from "../components/canvas/templates/SingleSimpleTemplate";
 
 export type TemplateOrientation = "portrait" | "landscape";
 
@@ -18,6 +19,11 @@ export const TEMPLATES = {
     label: "1인 세로 템플릿",
     orientation: "portrait",
     component: SingleTemplatePortrait,
+  },
+  "single-simple": {
+    label: "1인 간단 템플릿",
+    orientation: "landscape",
+    component: SingleSimpleTemplate,
   },
   "double-symmetric": {
     label: "2인 대칭 템플릿",

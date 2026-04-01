@@ -10,6 +10,7 @@ import { useImageUpload } from "../hooks/useImageUpload";
 
 interface ImageAssetProps {
   asset: ImageAssetType;
+  zoneShape?: "rect" | "circle";
 }
 
 function ImageToolbar({ asset }: { asset: ImageAssetType }) {
@@ -110,7 +111,7 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
   );
 }
 
-export default function ImageAsset({ asset }: ImageAssetProps) {
+export default function ImageAsset({ asset, zoneShape }: ImageAssetProps) {
   const { updateAsset } = useAssets();
   const [isDragging, setIsDragging] = useState(false);
 
@@ -144,7 +145,11 @@ export default function ImageAsset({ asset }: ImageAssetProps) {
   };
 
   return (
-    <AssetWrapper assetId={asset.id} toolbar={<ImageToolbar asset={asset} />}>
+    <AssetWrapper
+      assetId={asset.id}
+      toolbar={<ImageToolbar asset={asset} />}
+      zoneShape={zoneShape}
+    >
       <div
         className="w-full h-full relative select-none"
         style={{ background: getBackgroundStyle(asset) }}

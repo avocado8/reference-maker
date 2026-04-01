@@ -17,6 +17,7 @@ interface TemplateZoneProps {
   placeholder?: string;
   className?: string;
   allowedTypes?: AssetType[];
+  shape?: "rect" | "circle";
 }
 
 export default function TemplateZone({
@@ -24,6 +25,7 @@ export default function TemplateZone({
   placeholder,
   className,
   allowedTypes,
+  shape,
 }: TemplateZoneProps) {
   const { assets, addAsset, templateSlots, setTemplateSlot } = useAssets();
   const [showPicker, setShowPicker] = useState(false);
@@ -56,11 +58,11 @@ export default function TemplateZone({
         className={`w-full h-full ${className || ""} ${!isTransparent ? "bg-neutral-100 shadow-md" : ""} transition-colors duration-200`}
       >
         {asset.type === "image" && (
-          <ImageAsset asset={asset as ImageAssetType} />
+          <ImageAsset asset={asset as ImageAssetType} zoneShape={shape} />
         )}
-        {asset.type === "text" && <TextAsset asset={asset as TextAssetType} />}
+        {asset.type === "text" && <TextAsset asset={asset as TextAssetType} zoneShape={shape} />}
         {asset.type === "palette" && (
-          <ColorPaletteAsset asset={asset as PaletteAssetType} />
+          <ColorPaletteAsset asset={asset as PaletteAssetType} zoneShape={shape} />
         )}
       </div>
     );

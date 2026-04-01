@@ -9,14 +9,13 @@ function SideRectZone({
   side: Side;
   position: "middle" | "bottom";
 }) {
-  const sideLabel = side === "left" ? "왼쪽" : "오른쪽";
   const positionLabel = position === "middle" ? "가운데" : "하단";
 
   return (
     <div className="rounded-2xl overflow-hidden">
       <TemplateZone
         slotId={`double3-${position}-${side}`}
-        placeholder={`${positionLabel} ${sideLabel} 영역`}
+        placeholder={`${positionLabel} 영역`}
         className={
           position === "middle" ? "flex-1 min-h-0" : "h-[180px] shrink-0"
         }
@@ -28,9 +27,9 @@ function SideRectZone({
 /** 상단 3분할 영역 */
 function TopZone({ position }: { position: "left" | "center" | "right" }) {
   const labelMap = {
-    left: "왼쪽 작은 영역",
-    center: "가운데 제목 영역",
-    right: "오른쪽 작은 영역",
+    left: "컬러파레트",
+    center: "페어명",
+    right: "컬러파레트",
   };
 
   return (

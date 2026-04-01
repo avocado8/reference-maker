@@ -8,6 +8,7 @@ interface AssetWrapperProps {
   assetId: string;
   toolbar: ReactNode;
   children: ReactNode;
+  zoneShape?: "rect" | "circle";
 }
 
 /**
@@ -21,6 +22,7 @@ export default function AssetWrapper({
   assetId,
   toolbar,
   children,
+  zoneShape,
 }: AssetWrapperProps) {
   const { removeAsset } = useAssets();
   const [isOpen, setIsOpen] = useState(false);
@@ -57,7 +59,10 @@ export default function AssetWrapper({
       <button
         onClick={() => removeAsset(assetId)}
         data-export-ignore="true"
-        className="absolute top-1 right-1 z-20 p-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow"
+        className={clsx(
+          "absolute z-20 p-1 bg-red-500/80 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow",
+          zoneShape === "circle" ? "top-[15%] right-[15%]" : "top-1 right-1"
+        )}
         title="삭제"
       >
         <X size={12} />

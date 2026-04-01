@@ -70,9 +70,13 @@ function PaletteToolbar({ asset }: { asset: PaletteAssetType }) {
 
 interface ColorPaletteAssetProps {
   asset: PaletteAssetType;
+  zoneShape?: "rect" | "circle";
 }
 
-export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
+export default function ColorPaletteAsset({
+  asset,
+  zoneShape,
+}: ColorPaletteAssetProps) {
   const { updateAsset } = useAssets();
   const showAddButton = asset.showAddButton ?? true;
 
@@ -108,7 +112,11 @@ export default function ColorPaletteAsset({ asset }: ColorPaletteAssetProps) {
   };
 
   return (
-    <AssetWrapper assetId={asset.id} toolbar={<PaletteToolbar asset={asset} />}>
+    <AssetWrapper
+      assetId={asset.id}
+      toolbar={<PaletteToolbar asset={asset} />}
+      zoneShape={zoneShape}
+    >
       <div
         className="w-full h-full p-4 flex items-center justify-center"
         style={{ background: getBackgroundStyle(asset) }}

@@ -311,9 +311,10 @@ function TextToolbar({
 
 interface TextAssetProps {
   asset: TextAssetType;
+  zoneShape?: "rect" | "circle";
 }
 
-export default function TextAsset({ asset }: TextAssetProps) {
+export default function TextAsset({ asset, zoneShape }: TextAssetProps) {
   const { updateAsset } = useAssets();
   const editorRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
@@ -511,6 +512,7 @@ export default function TextAsset({ asset }: TextAssetProps) {
   return (
     <AssetWrapper
       assetId={asset.id}
+      zoneShape={zoneShape}
       toolbar={
         <TextToolbar
           asset={asset}

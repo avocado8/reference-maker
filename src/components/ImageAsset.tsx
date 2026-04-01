@@ -6,14 +6,20 @@ import type { ImageAssetType } from "../types/assets";
 import AssetWrapper from "./AssetWrapper";
 import BackgroundControl, { getBackgroundStyle } from "./BackgroundControl";
 import SliderControl from "./SliderControl";
+import { useImageUpload } from "../hooks/useImageUpload";
 
 interface ImageAssetProps {
   asset: ImageAssetType;
+  zoneShape?: "rect" | "circle";
 }
 
 function ImageToolbar({ asset }: { asset: ImageAssetType }) {
   const { updateAsset } = useAssets();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { handleImageUpload } = useImageUpload({
+    onSuccess: (url) => updateAsset(asset.id, { url }),
+  });
 
   return (
     <div className="min-w-[260px]">
@@ -98,17 +104,14 @@ function ImageToolbar({ asset }: { asset: ImageAssetType }) {
         ref={fileInputRef}
         type="file"
         accept="image/*"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) updateAsset(asset.id, { url: URL.createObjectURL(file) });
-        }}
+        onChange={handleImageUpload}
         className="hidden"
       />
     </div>
   );
 }
 
-export default function ImageAsset({ asset }: ImageAssetProps) {
+export default function ImageAsset({ asset, zoneShape }: ImageAssetProps) {
   const { updateAsset } = useAssets();
   const [isDragging, setIsDragging] = useState(false);
 
@@ -142,7 +145,11 @@ export default function ImageAsset({ asset }: ImageAssetProps) {
   };
 
   return (
-    <AssetWrapper assetId={asset.id} toolbar={<ImageToolbar asset={asset} />}>
+    <AssetWrapper
+      assetId={asset.id}
+      toolbar={<ImageToolbar asset={asset} />}
+      zoneShape={zoneShape}
+    >
       <div
         className="w-full h-full relative select-none"
         style={{ background: getBackgroundStyle(asset) }}

@@ -21,16 +21,16 @@ export default function DoubleTemplateSymmetric() {
             <div className="w-[250px] h-[250px] min-w-[250px] min-h-[250px] rounded-full overflow-hidden">
               <TemplateZone
                 slotId="double2-a-photo-1"
+                shape="circle"
                 placeholder="A 사진 1"
-                allowedTypes={["image"]}
               />
             </div>
 
             <div className="w-[250px] h-[250px] min-w-[250px] min-h-[250px] rounded-full overflow-hidden">
               <TemplateZone
                 slotId="double2-a-photo-2"
+                shape="circle"
                 placeholder="A 사진 2"
-                allowedTypes={["image"]}
               />
             </div>
 
@@ -88,16 +88,16 @@ export default function DoubleTemplateSymmetric() {
             <div className="w-[250px] h-[250px] min-w-[250px] min-h-[250px] rounded-full overflow-hidden">
               <TemplateZone
                 slotId="double2-b-photo-1"
+                shape="circle"
                 placeholder="B 사진 1"
-                allowedTypes={["image"]}
               />
             </div>
 
             <div className="w-[250px] h-[250px] min-w-[250px] min-h-[250px] rounded-full overflow-hidden">
               <TemplateZone
                 slotId="double2-b-photo-2"
+                shape="circle"
                 placeholder="B 사진 2"
-                allowedTypes={["image"]}
               />
             </div>
 

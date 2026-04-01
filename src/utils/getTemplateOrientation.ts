@@ -1,16 +1,10 @@
-import type { CanvasOrientation, TemplateType } from "../types/canvas";
+import type { TemplateType } from "../types/canvas";
+import { TEMPLATES } from "../config/templates";
 
-export const getTemplateOrientation = (
+export function getTemplateOrientation(
   templateType?: TemplateType,
-): CanvasOrientation => {
-  switch (templateType) {
-    case "single-portrait":
-      return "portrait";
-    case "double-landscape":
-    case "double-symmetric":
-    case "double-twoshot":
-      return "landscape";
-    default:
-      return "portrait";
-  }
-};
+): "portrait" | "landscape" {
+  if (!templateType) return "portrait";
+  const templateConfig = TEMPLATES[templateType];
+  return templateConfig?.orientation ?? "portrait";
+}

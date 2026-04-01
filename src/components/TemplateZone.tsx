@@ -1,21 +1,23 @@
-import { useState, useRef } from "react";
+import { ImageIcon, Palette, Plus, Type } from "lucide-react";
+import { useRef, useState } from "react";
+import { useImageUpload } from "../hooks/useImageUpload";
 import { useAssets } from "../store/AssetContext";
-import type { AssetType } from "../types/assets";
 import type {
+  AssetType,
   ImageAssetType,
-  TextAssetType,
   PaletteAssetType,
+  TextAssetType,
 } from "../types/assets";
+import ColorPaletteAsset from "./ColorPaletteAsset";
 import ImageAsset from "./ImageAsset";
 import TextAsset from "./TextAsset";
-import ColorPaletteAsset from "./ColorPaletteAsset";
-import { ImageIcon, Palette, Plus, Type } from "lucide-react";
 
 interface TemplateZoneProps {
   slotId: string;
   placeholder?: string;
   className?: string;
   allowedTypes?: AssetType[];
+  shape?: "rect" | "circle";
 }
 
 export default function TemplateZone({
@@ -23,6 +25,7 @@ export default function TemplateZone({
   placeholder,
   className,
   allowedTypes,
+  shape,
 }: TemplateZoneProps) {
   const { assets, addAsset, templateSlots, setTemplateSlot } = useAssets();
   const [showPicker, setShowPicker] = useState(false);
@@ -40,15 +43,9 @@ export default function TemplateZone({
     setShowPicker(false);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      handleAdd("image", undefined, { url: URL.createObjectURL(file) });
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
+  const { handleImageUpload: handleImageChange } = useImageUpload({
+    onSuccess: (url) => handleAdd("image", undefined, { url }),
+  });
 
   // 에셋이 있으면 AssetWrapper가 내장된 각 컴포넌트를 그대로 렌더링
   // (X 버튼, 툴바는 AssetWrapper가 제공)
@@ -61,11 +58,11 @@ export default function TemplateZone({
         className={`w-full h-full ${className || ""} ${!isTransparent ? "bg-neutral-100 shadow-md" : ""} transition-colors duration-200`}
       >
         {asset.type === "image" && (
-          <ImageAsset asset={asset as ImageAssetType} />
+          <ImageAsset asset={asset as ImageAssetType} zoneShape={shape} />
         )}
-        {asset.type === "text" && <TextAsset asset={asset as TextAssetType} />}
+        {asset.type === "text" && <TextAsset asset={asset as TextAssetType} zoneShape={shape} />}
         {asset.type === "palette" && (
-          <ColorPaletteAsset asset={asset as PaletteAssetType} />
+          <ColorPaletteAsset asset={asset as PaletteAssetType} zoneShape={shape} />
         )}
       </div>
     );

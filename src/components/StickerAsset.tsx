@@ -100,6 +100,13 @@ export default function StickerAsset({
 
   const BASE_SIZE = 150; // scale=1 일 때 최대 변 길이 (px in canvas space)
   const displaySize = BASE_SIZE * sticker.scale;
+  const STICKER_STYLE = {
+    shadow:
+      "drop-shadow(0px 4px 8px rgba(0,0,0,0.1)) drop-shadow(0px 1px 3px rgba(0,0,0,0.3))",
+    border:
+      "drop-shadow(2.5px 2.5px #fff) drop-shadow(2.5px -2.5px #fff) drop-shadow(-2.5px 2.5px #fff) drop-shadow(-2.5px -2.5px #fff)",
+    none: "",
+  };
 
   // ── 드래그 ─────────────────────────────────────────────
   const onMouseDown = (e: React.MouseEvent) => {
@@ -201,8 +208,7 @@ export default function StickerAsset({
                       width: "auto",
                       height: "auto",
                       objectFit: "contain",
-                      filter:
-                        "drop-shadow(0px 4px 8px rgba(0,0,0,0.1)) drop-shadow(0px 1px 3px rgba(0,0,0,0.3))",
+                      filter: STICKER_STYLE[sticker.style],
                       pointerEvents: "none",
                       display: "block",
                     }}
@@ -334,6 +340,38 @@ export default function StickerAsset({
                 className="hidden"
                 onChange={handleFile}
               />
+              <div className="flex gap-1">
+                <span className="text-xs flex-1 text-neutral-400">스타일</span>
+                {[
+                  {
+                    value: "shadow",
+                    label: "그림자",
+                  },
+                  {
+                    value: "border",
+                    label: "칼선",
+                  },
+                  {
+                    value: "none",
+                    label: "없음",
+                  },
+                ].map((style) => (
+                  <button
+                    key={style.value}
+                    onClick={() =>
+                      updateSticker(sticker.id, { style: style.value })
+                    }
+                    className={clsx(
+                      "text-xs p-1 rounded transition-colors",
+                      (sticker.style ?? "none") === style.value
+                        ? "bg-white text-neutral-800"
+                        : "text-white/70 bg-white/20 hover:bg-white/30",
+                    )}
+                  >
+                    {style.label}
+                  </button>
+                ))}
+              </div>
             </>
           ) : (
             <div className="space-y-4">

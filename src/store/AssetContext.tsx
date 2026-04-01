@@ -140,7 +140,7 @@ export function AssetProvider({ children }: { children: ReactNode }) {
     if (stickerType === "image") {
       setStickerAssets((prev) => [
         ...prev,
-        { ...base, stickerType: "image", url: "" },
+        { ...base, stickerType: "image", url: "", style: "shadow" },
       ]);
     } else {
       setStickerAssets((prev) => [

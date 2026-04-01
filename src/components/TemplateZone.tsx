@@ -44,8 +44,15 @@ export default function TemplateZone({
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const url = await fileToDataUrl(file);
-      handleAdd("image", undefined, { url });
+      try {
+        const url = await fileToDataUrl(file);
+        handleAdd("image", undefined, { url });
+      } catch (error) {
+        console.error("Template zone image upload failed:", error);
+        alert(
+          "이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
+        );
+      }
     }
     if (fileInputRef.current) {
       fileInputRef.current.value = "";

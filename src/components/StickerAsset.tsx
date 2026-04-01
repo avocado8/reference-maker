@@ -155,8 +155,15 @@ export default function StickerAsset({
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = await fileToDataUrl(file);
-    updateSticker(sticker.id, { url });
+    try {
+      const url = await fileToDataUrl(file);
+      updateSticker(sticker.id, { url });
+    } catch (error) {
+      console.error("Sticker image upload failed:", error);
+      alert(
+        "스티커 이미지 업로드에 실패했습니다. 손상되지 않은 유효한 이미지인지 확인 후 다시 시도해주세요.",
+      );
+    }
     e.target.value = "";
   };
 

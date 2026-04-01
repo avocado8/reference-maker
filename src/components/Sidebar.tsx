@@ -19,13 +19,14 @@ import type { CanvasOrientation, TemplateType } from "../types/canvas";
 
 interface SidebarProps {
   className?: string;
+  onClose?: () => void;
 }
 
 const renderDivider = () => {
   return <div className="border-t border-neutral-700"></div>;
 };
 
-export default function Sidebar({ className }: SidebarProps) {
+export default function Sidebar({ className, onClose }: SidebarProps) {
   const { settings, updateSettings } = useCanvasSettings();
   const { addAsset, addSticker, clearAll } = useAssets();
   const [activeTab, setActiveTab] = useState<"info" | "settings">("settings");
@@ -53,11 +54,17 @@ export default function Sidebar({ className }: SidebarProps) {
         className,
       )}
     >
-      <div className="p-4 border-b border-neutral-700">
+      <div className="p-4 border-b border-neutral-700 flex items-center justify-between">
         <h1 className="text-xl font-bold text-white flex items-center gap-2">
           <Pencil className="text-blue-500" />
           커미션 자료 메이커
         </h1>
+        <button
+          onClick={onClose}
+          className="md:hidden p-1 rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       <div className="flex bg-neutral-800 p-1 m-4 rounded-lg">
